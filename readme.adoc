@@ -1,0 +1,18 @@
+= Golang WDK Rest API SDK
+
+Provides methods for working with a WDK site's Rest API in Go.
+
+[source, go]
+----
+package main
+
+import (
+	"fmt"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0"
+)
+
+func main() {
+	api := wdk.ForceNew("plasmodb.org")
+	fmt.Println(api.MustGetServiceDetails())
+}
+----

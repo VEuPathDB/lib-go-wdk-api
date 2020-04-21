@@ -1,0 +1,92 @@
+package wdk
+
+import (
+	"errors"
+	"net/http"
+	"strings"
+
+	"github.com/Foxcapades/Go-ChainRequest/simple"
+)
+
+const (
+	locationHeader = "Location"
+)
+
+// NewApiUrl parses the input url and returns an internal
+// representation of that URL data.
+//
+// An error is returned if the url given does not appear to
+// be valid or if the site it points to is not reachable.
+//
+// Valid input url formats:
+//
+//   site.com
+//   site.com?some=query&string=value
+//   http://site.com
+//   http://site.com?some=query&string=value
+//   https://site.com
+//   https://site.com?some=query&string=value
+func NewApiUrl(url string) (*ApiUrl, error) {
+	out := new(ApiUrl)
+
+	if err := out.parseUrl(url); err != nil {
+		return nil, err
+	}
+
+	if err := out.resolve(); err != nil {
+		return nil, err
+	}
+
+	return out, nil
+}
+
+type ApiUrl struct {
+	base     string
+	query    string
+}
+
+func (a *ApiUrl) String() string {
+	return a.base + a.query
+}
+
+func (a *ApiUrl) wrap(in string) string {
+	return a.base + in + a.query
+}
+
+func (a *ApiUrl) parseUrl(url string) error {
+	if i := strings.IndexByte(url, '?'); i > -1 {
+		a.query = url[i:]
+		url = url[:i]
+	}
+
+	if len(url) < 4 {
+		return errors.New("url too short to be valid")
+	}
+
+	if strings.HasSuffix(url, "/") {
+		url = strings.TrimRight(url, "/")
+	}
+
+	if !strings.HasPrefix(url, "http") {
+		url = "https://" + url
+	} else if url[4] != 's' {
+		url = strings.Replace(url, "http:", "https", 1)
+	}
+	a.base = url
+
+	return nil
+}
+
+func (a *ApiUrl) resolve() error {
+	res := simple.GetRequest(a.String()).DisableRedirects().Submit()
+
+	if err := res.GetError(); err != nil {
+		return err
+	}
+
+	if res.MustGetResponseCode() == http.StatusFound {
+		return a.parseUrl(res.MustGetHeader(locationHeader))
+	}
+
+	return nil
+}
