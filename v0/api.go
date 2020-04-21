@@ -133,7 +133,8 @@ func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
 	})
 	ctxLog.Trace("Api.GetPublicStrategyList")
 
-	err = prepGet(a.path.PublicStrategyList(), &a.apiProps).Submit().
+	err = prepGet(a.path.PublicStrategyList(), &a.apiProps).
+		Submit().
 		UnmarshalBody(&res, unmarshaler)
 
 	if err != nil {

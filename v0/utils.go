@@ -23,13 +23,16 @@ func prepPost(url string, props *apiProps) creq.Request {
 }
 
 func prepCreq(req creq.Request, props *apiProps) creq.Request {
-	logger.WithFields(log.Fields{
-		"url":           req.GetUrl(),
-		"method":        req.GetMethod(),
-		"authToken":     props.authToken,
-		"shareSessions": props.oneSession,
-		"sessionId":     props.sessionId,
-	}).Debug("Preparing HTTP request")
+	defer func() {
+		logger.WithFields(log.Fields{
+			"url":           req.GetUrl(),
+			"method":        req.GetMethod(),
+			"authToken":     props.authToken,
+			"shareSessions": props.oneSession,
+			"sessionId":     props.sessionId,
+			"cookies":       req.GetCookies(),
+		}).Debug("Prepared HTTP request")
+	}()
 
 	if props.authToken != "" {
 		req.AddCookie(&http.Cookie{Name: cookieAuthToken, Value: props.authToken})
