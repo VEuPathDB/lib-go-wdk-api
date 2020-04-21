@@ -87,7 +87,7 @@ func (a *api) EnableSessionSharing(val bool) Api {
 	if !a.gotSessionId && val {
 		props := a.apiProps
 		props.oneSession = false
-		a.sessionId = getSessionId(a.url.String(), &props)
+		a.sessionId = getSessionId(a.url.String(), a.apiProps)
 	}
 	return a
 }
@@ -98,9 +98,7 @@ func (a *api) UseAuthToken(tkn string) Api {
 	a.authToken = tkn
 
 	// Update to a session that's authenticated
-	props := a.apiProps
-	props.oneSession = false
-	a.sessionId = getSessionId(a.url.String(), &props)
+	a.sessionId = getSessionId(a.url.String(), a.apiProps)
 
 	return a
 }

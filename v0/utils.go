@@ -45,6 +45,7 @@ func prepCreq(req creq.Request, props *apiProps) creq.Request {
 	return req
 }
 
-func getSessionId(url string, props *apiProps) string {
-	return prepGet(url, props).Submit().MustGetCookie(cookieSessionId).Value
+func getSessionId(url string, props apiProps) string {
+	props.oneSession = false
+	return prepGet(url, &props).Submit().MustGetCookie(cookieSessionId).Value
 }

@@ -4,18 +4,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var logger *log.Logger
+var logger *log.Entry
 
 func init() {
-	logger = log.New()
-	logger.SetLevel(log.FatalLevel)
+	tmp := log.New()
+	tmp.SetLevel(log.FatalLevel)
+	logger = tmp.WithField("sourceLib", "wdk")
 }
 
 func Logger() *log.Logger {
-	return logger
+	return logger.Logger
 }
 
 func SetLogger(log *log.Logger) {
-	logger = log
+	logger = log.WithField("sourceLib", "wdk")
 }
 
