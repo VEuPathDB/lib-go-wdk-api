@@ -11,6 +11,8 @@ type UserApi interface {
 	// the current user.
 	GetStrategies() (strategies.ListResponse, error)
 
+	MustGetStrategies() strategies.ListResponse
+
 	// CopyStrategy submits a strategy copy request using the
 	// given signature as the source strategy reference.
 	//
@@ -18,8 +20,12 @@ type UserApi interface {
 	// matching that signature or this will fail.
 	CopyStrategy(signature string) (strategies.CopyResponse, error)
 
+	MustCopyStrategy(signature string) strategies.CopyResponse
+
 	// GetStrategy looks up the strategy with the given id.
 	GetStrategy(strategyId uint) (strategies.Strategy, error)
+
+	MustGetStrategy(strategyId uint) strategies.Strategy
 }
 
 type userApi struct {
@@ -36,8 +42,7 @@ func (u *userApi) GetStrategies() (res strategies.ListResponse, err error) {
 	})
 	ctxLog.Trace("UserApi.GetStrategies")
 
-	err = prepGet(u.builder.Strategies(), u.props).Submit().
-		UnmarshalBody(&res, unmarshaler)
+	err = subAndParse(prepGet(u.builder.Strategies(), u.props), &res)
 
 	if err != nil {
 		ctxLog.WithField("error", err).Debug("UserApi.GetStrategies request failed")
@@ -45,6 +50,22 @@ func (u *userApi) GetStrategies() (res strategies.ListResponse, err error) {
 
 	return
 }
+
+func (u *userApi) MustGetStrategies() (res strategies.ListResponse) {
+	logger.WithFields(log.Fields{
+		"shareSessions": u.props.oneSession,
+		"sessionId":     u.props.sessionId,
+		"authToken":     u.props.authToken,
+	}).Trace("Api.MustGetStrategies")
+
+	out, err := u.GetStrategies()
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
+}
+
 
 func (u *userApi) CopyStrategy(signature string) (res strategies.CopyResponse, err error) {
 	ctxLog := logger.WithFields(log.Fields{
@@ -56,16 +77,30 @@ func (u *userApi) CopyStrategy(signature string) (res strategies.CopyResponse, e
 	ctxLog.Trace("UserApi.CopyStrategy")
 
 	body := write.CopyStrategyReq{SourceStrategySignature: signature}
-	err = prepPost(u.builder.Strategies(), u.props).
-		MarshalBody(body, marshaler).
-		Submit().
-		UnmarshalBody(&res, unmarshaler)
+	err = subAndParse(prepPost(u.builder.Strategies(), u.props).
+		MarshalBody(body, marshaler), &res)
 
 	if err != nil {
 		ctxLog.WithField("error", err).Debug("UserApi.CopyStrategy request failed")
 	}
 
 	return
+}
+
+func (u *userApi) MustCopyStrategy(sig string) (res strategies.CopyResponse) {
+	logger.WithFields(log.Fields{
+		"shareSessions": u.props.oneSession,
+		"sessionId":     u.props.sessionId,
+		"authToken":     u.props.authToken,
+		"signature":     sig,
+	}).Trace("Api.MustCopyStrategy")
+
+	out, err := u.CopyStrategy(sig)
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
 }
 
 func (u *userApi) GetStrategy(id uint) (res strategies.Strategy, err error) {
@@ -77,12 +112,27 @@ func (u *userApi) GetStrategy(id uint) (res strategies.Strategy, err error) {
 	})
 	ctxLog.Trace("UserApi.GetStrategy")
 
-	err = prepGet(u.builder.Strategy(id), u.props).Submit().
-		UnmarshalBody(&res, unmarshaler)
+	err = subAndParse(prepGet(u.builder.Strategy(id), u.props), &res)
 
 	if err != nil {
 		ctxLog.WithField("error", err).Debug("UserApi.GetStrategy request failed")
 	}
 
 	return
+}
+
+func (u *userApi) MustGetStrategy(id uint) (res strategies.Strategy) {
+	logger.WithFields(log.Fields{
+		"shareSessions": u.props.oneSession,
+		"sessionId":     u.props.sessionId,
+		"authToken":     u.props.authToken,
+		"strategyId":    id,
+	}).Trace("Api.MustGetStrategy")
+
+	out, err := u.GetStrategy(id)
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
 }

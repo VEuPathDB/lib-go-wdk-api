@@ -2,9 +2,11 @@ package wdk
 
 import (
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
+	"fmt"
 	"net/http"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/Foxcapades/Go-ChainRequest"
 	"github.com/Foxcapades/Go-ChainRequest/simple"
@@ -50,6 +52,7 @@ func getSessionId(url string, props apiProps) string {
 	props.oneSession = false
 	res := prepGet(url, &props).
 		Submit()
+	defer res.Close()
 
 	cookie := res.MustGetCookie(cookieSessionId)
 
@@ -64,4 +67,23 @@ func getSessionId(url string, props apiProps) string {
 	}
 
 	return cookie.Value
+}
+
+func subAndParse(req creq.Request, val interface{}) (err error) {
+	res := req.Submit()
+	defer res.Close()
+
+	err = res.GetError()
+
+	if err != nil {
+		return
+	}
+
+	code := res.MustGetResponseCode()
+
+	if !(code >= 200 && code <= 299) {
+		return fmt.Errorf("server responded with code %d", code)
+	}
+
+	return res.UnmarshalBody(val, unmarshaler)
 }

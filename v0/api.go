@@ -111,8 +111,7 @@ func (a *api) GetServiceDetails() (res read.Service, err error) {
 	})
 	ctxLog.Trace("Api.GetServiceDetails")
 
-	err = prepGet(a.path.Service(), &a.apiProps).Submit().
-		UnmarshalBody(&res, unmarshaler)
+	err = subAndParse(prepGet(a.path.Service(), &a.apiProps), &res)
 
 	if err != nil {
 		ctxLog.WithField("error", err).Debug("Api.GetServiceDetails request failed")
@@ -144,9 +143,7 @@ func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
 	})
 	ctxLog.Trace("Api.GetPublicStrategyList")
 
-	err = prepGet(a.path.PublicStrategyList(), &a.apiProps).
-		Submit().
-		UnmarshalBody(&res, unmarshaler)
+	err = subAndParse(prepGet(a.path.PublicStrategyList(), &a.apiProps), &res)
 
 	if err != nil {
 		ctxLog.WithField("error", err).Debug("Api.GetPublicStrategyList request failed")
