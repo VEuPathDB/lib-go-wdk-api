@@ -73,6 +73,8 @@ type Api interface {
 type api struct {
 	apiProps
 
+	gotSessionId bool
+
 	url  *ApiUrl
 	path PathBuilder
 }
@@ -81,7 +83,12 @@ func (a *api) EnableSessionSharing(val bool) Api {
 	logger.WithField("sessionSharing", val).Trace("Api.EnableSessionSharing")
 
 	a.oneSession = val
-	a.sessionId = getSessionId(a.url.String())
+
+	if !a.gotSessionId && val {
+		props := a.apiProps
+		props.oneSession = false
+		a.sessionId = getSessionId(a.url.String(), &props)
+	}
 	return a
 }
 
@@ -89,6 +96,12 @@ func (a *api) UseAuthToken(tkn string) Api {
 	logger.WithField("token", tkn).Trace("Api.UseAuthToken")
 
 	a.authToken = tkn
+
+	// Update to a session that's authenticated
+	props := a.apiProps
+	props.oneSession = false
+	a.sessionId = getSessionId(a.url.String(), &props)
+
 	return a
 }
 
