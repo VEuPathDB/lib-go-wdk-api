@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 
 	"github.com/Foxcapades/Go-ChainRequest"
 	"github.com/Foxcapades/Go-ChainRequest/simple"
@@ -47,5 +48,20 @@ func prepCreq(req creq.Request, props *apiProps) creq.Request {
 
 func getSessionId(url string, props apiProps) string {
 	props.oneSession = false
-	return prepGet(url, &props).Submit().MustGetCookie(cookieSessionId).Value
+	res := prepGet(url, &props).
+		Submit()
+
+	cookie := res.MustGetCookie(cookieSessionId)
+
+	if cookie == nil {
+		hmm := res.MustGetHeader("Set-Cookie")
+		pos := strings.Index(hmm, cookieSessionId)
+		if pos == -1 {
+			logger.Panic("could not retrieve session id cookie")
+		}
+
+		return hmm[pos+len(cookieSessionId)+1 : strings.IndexByte(hmm[pos:], ';')]
+	}
+
+	return cookie.Value
 }

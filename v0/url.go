@@ -63,8 +63,8 @@ func (a *ApiUrl) parseUrl(url string) error {
 		return errors.New("url too short to be valid")
 	}
 
-	if strings.HasSuffix(url, "/") {
-		url = strings.TrimRight(url, "/")
+	if !strings.HasSuffix(url, "/") {
+		url += "/"
 	}
 
 	if !strings.HasPrefix(url, "http") {
