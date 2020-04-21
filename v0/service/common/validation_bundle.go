@@ -34,7 +34,7 @@ func (v *ValidationLevel) UnmarshalJSON(bytes []byte) error {
 type ValidationBundle struct {
 	Level   ValidationLevel `json:"level"`
 	IsValid bool            `json:"isValid"`
-	Errors *struct{
+	Errors  *struct{
 		General []string `json:"general"`
 		ByKey   map[string][]string `json:"byKey"`
 	} `json:"errors"`

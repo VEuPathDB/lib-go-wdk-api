@@ -1,11 +1,12 @@
 package wdk
 
 import (
-	log "github.com/sirupsen/logrus"
 	"strconv"
 
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/read"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/read/strategy-lists/public"
+	"github.com/sirupsen/logrus"
+
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/strategy-lists/public"
 )
 
 type apiProps struct {
@@ -57,9 +58,9 @@ type Api interface {
 	// against a QA site.
 	UseAuthToken(token string) Api
 
-	GetServiceDetails() (read.Service, error)
+	GetServiceDetails() (service.Service, error)
 
-	MustGetServiceDetails() read.Service
+	MustGetServiceDetails() service.Service
 
 	GetPublicStrategyList() (public.StrategyList, error)
 
@@ -103,8 +104,8 @@ func (a *api) UseAuthToken(tkn string) Api {
 	return a
 }
 
-func (a *api) GetServiceDetails() (res read.Service, err error) {
-	ctxLog := logger.WithFields(log.Fields{
+func (a *api) GetServiceDetails() (res service.Service, err error) {
+	ctxLog := logger.WithFields(logrus.Fields{
 		"shareSessions": a.oneSession,
 		"sessionId":     a.sessionId,
 		"authToken":     a.authToken,
@@ -120,8 +121,8 @@ func (a *api) GetServiceDetails() (res read.Service, err error) {
 	return
 }
 
-func (a *api) MustGetServiceDetails() (res read.Service) {
-	logger.WithFields(log.Fields{
+func (a *api) MustGetServiceDetails() (res service.Service) {
+	logger.WithFields(logrus.Fields{
 		"shareSessions": a.oneSession,
 		"sessionId":     a.sessionId,
 		"authToken":     a.authToken,
@@ -136,7 +137,7 @@ func (a *api) MustGetServiceDetails() (res read.Service) {
 }
 
 func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
-	ctxLog := logger.WithFields(log.Fields{
+	ctxLog := logger.WithFields(logrus.Fields{
 		"shareSessions": a.oneSession,
 		"sessionId":     a.sessionId,
 		"authToken":     a.authToken,
@@ -153,7 +154,7 @@ func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
 }
 
 func (a *api) MustGetPublicStrategyList() public.StrategyList {
-	logger.WithFields(log.Fields{
+	logger.WithFields(logrus.Fields{
 		"shareSessions": a.oneSession,
 		"sessionId":     a.sessionId,
 		"authToken":     a.authToken,

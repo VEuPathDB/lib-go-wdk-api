@@ -1,9 +1,9 @@
 package wdk
 
 import (
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/read/users/strategies"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/write"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/users/strategies"
 )
 
 type UserApi interface {
@@ -35,7 +35,7 @@ type userApi struct {
 }
 
 func (u *userApi) GetStrategies() (res strategies.ListResponse, err error) {
-	ctxLog := logger.WithFields(log.Fields{
+	ctxLog := logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
@@ -52,7 +52,7 @@ func (u *userApi) GetStrategies() (res strategies.ListResponse, err error) {
 }
 
 func (u *userApi) MustGetStrategies() (res strategies.ListResponse) {
-	logger.WithFields(log.Fields{
+	logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
@@ -68,7 +68,7 @@ func (u *userApi) MustGetStrategies() (res strategies.ListResponse) {
 
 
 func (u *userApi) CopyStrategy(signature string) (res strategies.CopyResponse, err error) {
-	ctxLog := logger.WithFields(log.Fields{
+	ctxLog := logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
@@ -76,7 +76,7 @@ func (u *userApi) CopyStrategy(signature string) (res strategies.CopyResponse, e
 	})
 	ctxLog.Trace("UserApi.CopyStrategy")
 
-	body := write.CopyStrategyReq{SourceStrategySignature: signature}
+	body := strategies.CopyRequest{SourceStrategySignature: signature}
 	err = subAndParse(prepPost(u.builder.Strategies(), u.props).
 		MarshalBody(body, marshaler), &res)
 
@@ -88,7 +88,7 @@ func (u *userApi) CopyStrategy(signature string) (res strategies.CopyResponse, e
 }
 
 func (u *userApi) MustCopyStrategy(sig string) (res strategies.CopyResponse) {
-	logger.WithFields(log.Fields{
+	logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
@@ -104,7 +104,7 @@ func (u *userApi) MustCopyStrategy(sig string) (res strategies.CopyResponse) {
 }
 
 func (u *userApi) GetStrategy(id uint) (res strategies.Strategy, err error) {
-	ctxLog := logger.WithFields(log.Fields{
+	ctxLog := logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
@@ -122,7 +122,7 @@ func (u *userApi) GetStrategy(id uint) (res strategies.Strategy, err error) {
 }
 
 func (u *userApi) MustGetStrategy(id uint) (res strategies.Strategy) {
-	logger.WithFields(log.Fields{
+	logger.WithFields(logrus.Fields{
 		"shareSessions": u.props.oneSession,
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,

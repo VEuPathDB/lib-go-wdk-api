@@ -1,4 +1,4 @@
-package read
+package service
 
 type Service struct {
 	ChangePasswordUrl string `json:"changePasswordUrl"`
