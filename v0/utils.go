@@ -2,6 +2,7 @@ package wdk
 
 import (
 	"encoding/json"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/Foxcapades/Go-ChainRequest"
@@ -22,6 +23,14 @@ func prepPost(url string, props *apiProps) creq.Request {
 }
 
 func prepCreq(req creq.Request, props *apiProps) creq.Request {
+	logger.WithFields(log.Fields{
+		"url":           req.GetUrl(),
+		"method":        req.GetMethod(),
+		"authToken":     props.authToken,
+		"shareSessions": props.oneSession,
+		"sessionId":     props.sessionId,
+	}).Debug("Preparing HTTP request")
+
 	if props.authToken != "" {
 		req.AddCookie(&http.Cookie{Name: cookieAuthToken, Value: props.authToken})
 	}

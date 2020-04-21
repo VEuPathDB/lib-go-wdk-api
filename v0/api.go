@@ -1,6 +1,7 @@
 package wdk
 
 import (
+	log "github.com/sirupsen/logrus"
 	"strconv"
 
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/read"
@@ -77,40 +78,85 @@ type api struct {
 }
 
 func (a *api) EnableSessionSharing(val bool) Api {
+	logger.WithField("sessionSharing", val).Trace("Api.EnableSessionSharing")
+
 	a.oneSession = val
 	a.sessionId = getSessionId(a.url.String())
 	return a
 }
 
 func (a *api) UseAuthToken(tkn string) Api {
+	logger.WithField("token", tkn).Trace("Api.UseAuthToken")
+
 	a.authToken = tkn
 	return a
 }
 
 func (a *api) GetServiceDetails() (res read.Service, err error) {
+	ctxLog := logger.WithFields(log.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	})
+	ctxLog.Trace("Api.GetServiceDetails")
+
 	err = prepGet(a.path.Service(), &a.apiProps).Submit().
 		UnmarshalBody(&res, unmarshaler)
+
+	if err != nil {
+		ctxLog.WithField("error", err).Debug("Api.GetServiceDetails request failed")
+	}
+
 	return
 }
 
 func (a *api) MustGetServiceDetails() (res read.Service) {
-	prepGet(a.path.Service(), &a.apiProps).
-		Submit().
-		MustUnmarshalBody(&res, unmarshaler)
-	return
+	logger.WithFields(log.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	}).Trace("Api.MustGetServiceDetails")
+
+	out, err := a.GetServiceDetails()
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
 }
 
 func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
+	ctxLog := logger.WithFields(log.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	})
+	ctxLog.Trace("Api.GetPublicStrategyList")
+
 	err = prepGet(a.path.PublicStrategyList(), &a.apiProps).Submit().
 		UnmarshalBody(&res, unmarshaler)
+
+	if err != nil {
+		ctxLog.WithField("error", err).Debug("Api.GetPublicStrategyList request failed")
+	}
+
 	return
 }
 
-func (a *api) MustGetPublicStrategyList() (res public.StrategyList) {
-	prepGet(a.path.PublicStrategyList(), &a.apiProps).
-		Submit().
-		MustUnmarshalBody(&res, unmarshaler)
-	return
+func (a *api) MustGetPublicStrategyList() public.StrategyList {
+	logger.WithFields(log.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	}).Trace("Api.MustGetPublicStrategyList")
+
+	out, err := a.GetPublicStrategyList()
+
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
 }
 
 func (a *api) UserApiFor(userId uint) UserApi {
