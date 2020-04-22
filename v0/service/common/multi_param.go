@@ -1,0 +1,52 @@
+package common
+
+type ParamKind uint8
+
+const (
+	ParamKindFilter ParamKind = iota
+	ParamKindAnswer
+	ParamKindEnum
+	ParamKindNumber
+	ParamKindDate
+	ParamKindDataset
+	ParamKindString
+	ParamKindTimestamp
+)
+
+type MultiParam struct {
+	kind  ParamKind
+	value interface{}
+}
+
+//          "items": [
+//            {
+//              "$ref": "../../includes/params/filter-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/answer-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/enum-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/string-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/number-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/date-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/dataset-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/filter-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/string-param.json"
+//            },
+//            {
+//              "$ref": "../../includes/params/timestamp-param.json"
+//            }
+//          ]

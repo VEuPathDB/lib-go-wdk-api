@@ -5,4 +5,5 @@ const (
 	cookieSessionId = "JSESSIONID"
 
 	userCurrent = "current"
+	expanded    = "format=expanded"
 )

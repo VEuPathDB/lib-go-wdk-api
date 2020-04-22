@@ -5,6 +5,7 @@ const (
 	urlUsers        = urlService + "/users"
 	urlUser         = urlUsers + "/%s"
 	urlPublicStrats = urlService + "/strategy-lists/public"
+	urlRecordTypes  = urlService + "/record-types"
 )
 
 func NewPathBuilder(url *ApiUrl) PathBuilder {
@@ -23,6 +24,10 @@ type PathBuilder interface {
 	// PublicStrategyList returns the URL to the WDK public
 	// strategy list endpoint.
 	PublicStrategyList() string
+
+	RecordTypes() string
+
+	RecordTypesExpanded() string
 }
 
 type pathBuilder struct {
@@ -39,4 +44,12 @@ func (p *pathBuilder) Users() string {
 
 func (p *pathBuilder) PublicStrategyList() string {
 	return p.url.wrap(urlPublicStrats)
+}
+
+func (p *pathBuilder) RecordTypes() string {
+	return p.url.wrap(urlRecordTypes)
+}
+
+func (p *pathBuilder) RecordTypesExpanded() string {
+	return p.url.wrapQuery(urlRecordTypes, expanded)
 }

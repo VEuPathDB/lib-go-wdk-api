@@ -1,6 +1,7 @@
 package wdk
 
 import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -65,6 +66,14 @@ type Api interface {
 	GetPublicStrategyList() (public.StrategyList, error)
 
 	MustGetPublicStrategyList() public.StrategyList
+
+	GetRecordTypeNames() (res recordTypes.NameList, err error)
+
+	MustGetRecordTypeNames() recordTypes.NameList
+
+	GetExpandedRecordTypes() (res recordTypes.ExpandedList, err error)
+
+	MustGetExpandedRecordTypes() recordTypes.ExpandedList
 
 	UserApiFor(userId uint) UserApi
 
@@ -161,6 +170,72 @@ func (a *api) MustGetPublicStrategyList() public.StrategyList {
 	}).Trace("Api.MustGetPublicStrategyList")
 
 	out, err := a.GetPublicStrategyList()
+
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
+}
+
+func (a *api) GetRecordTypeNames() (res recordTypes.NameList, err error) {
+	ctxLog := logger.WithFields(logrus.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	})
+	ctxLog.Trace("Api.GetRecordTypeNames")
+
+	err = subAndParse(prepGet(a.path.RecordTypes(), &a.apiProps), &res)
+
+	if err != nil {
+		ctxLog.WithField("error", err).Debug("Api.GetRecordTypeNames request failed")
+	}
+
+	return
+}
+
+func (a *api) MustGetRecordTypeNames() recordTypes.NameList {
+	logger.WithFields(logrus.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	}).Trace("Api.MustGetRecordTypeNames")
+
+	out, err := a.GetRecordTypeNames()
+
+	if err != nil {
+		logger.Panic(err)
+	}
+
+	return out
+}
+
+func (a *api) GetExpandedRecordTypes() (res recordTypes.ExpandedList, err error) {
+	ctxLog := logger.WithFields(logrus.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	})
+	ctxLog.Trace("Api.GetExpandedRecordTypes")
+
+	err = subAndParse(prepGet(a.path.RecordTypesExpanded(), &a.apiProps), &res)
+
+	if err != nil {
+		ctxLog.WithField("error", err).Debug("Api.GetExpandedRecordTypes request failed")
+	}
+
+	return
+}
+
+func (a *api) MustGetExpandedRecordTypes() recordTypes.ExpandedList {
+	logger.WithFields(logrus.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	}).Trace("Api.MustGetExpandedRecordTypes")
+
+	out, err := a.GetExpandedRecordTypes()
 
 	if err != nil {
 		logger.Panic(err)

@@ -41,8 +41,9 @@ func NewApiUrl(url string) (*ApiUrl, error) {
 }
 
 type ApiUrl struct {
-	base     string
-	query    string
+	base  string
+	query string
+	hasQ  bool
 }
 
 func (a *ApiUrl) String() string {
@@ -50,12 +51,25 @@ func (a *ApiUrl) String() string {
 }
 
 func (a *ApiUrl) wrap(in string) string {
-	return a.base + in + a.query
+	if a.hasQ {
+		return a.base + in + a.query
+	} else {
+		return a.base + in
+	}
+}
+
+func (a *ApiUrl) wrapQuery(in, q string) string {
+	if a.hasQ {
+		return a.base + in + a.query + "&" + q
+	} else {
+		return a.base + in + "?" + q
+	}
 }
 
 func (a *ApiUrl) parseUrl(url string) error {
 	if i := strings.IndexByte(url, '?'); i > -1 {
 		a.query = url[i:]
+		a.hasQ  = true
 		url = url[:i]
 	}
 
