@@ -99,7 +99,11 @@ func (a *ApiUrl) resolve() error {
 	}
 
 	if res.MustGetResponseCode() == http.StatusFound {
-		return a.parseUrl(res.MustGetHeader(locationHeader))
+		location := res.MustGetHeader(locationHeader)
+
+		if strings.Index(location, "/app/") == -1 {
+			return a.parseUrl(location)
+		}
 	}
 
 	return nil

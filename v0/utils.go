@@ -51,6 +51,7 @@ func prepCreq(req creq.Request, props *apiProps) creq.Request {
 func getSessionId(url string, props apiProps) string {
 	props.oneSession = false
 	res := prepGet(url, &props).
+		DisableRedirects().
 		Submit()
 	defer res.Close()
 
