@@ -2,21 +2,25 @@ package param
 
 import "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
 
+// Base
+//
+// See org.gusdb.wdk.service.formatter.param.ParamFormatter
 type Base struct {
-	/* Required Fields */
 
-	DependentParams []string `json:"dependentParams"`
-	DisplayName     string   `json:"displayName"`
-	Group           string   `json:"group"`
-	Help            string   `json:"help"`
-	IsReadOnly      bool     `json:"isReadOnly"`
-	IsVisible       bool     `json:"isVisible"`
+	/* WDK Required Fields */
+
 	Name            string   `json:"name"`
+	DisplayName     string   `json:"displayName"`
+	Help            string   `json:"help"`
+	Kind            Kind     `json:"type"`
+	IsVisible       bool     `json:"isVisible"`
+	Group           string   `json:"group"`
+	IsReadOnly      bool     `json:"isReadOnly"`
+	DependentParams []string `json:"dependentParams"`
 
-	/* Optional Fields */
+	/* WDK Optional Fields */
 
 	InitialDisplayValue common.OptionalString `json:"initialDisplayValue"`
 
-	// TODO: Does this belong in the base param?  the schema for this is borked
-	Length common.OptionalUint `json:"length"`
+	/* SDK Internal Fields */
 }

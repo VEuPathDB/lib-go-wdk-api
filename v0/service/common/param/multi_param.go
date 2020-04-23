@@ -1,20 +1,7 @@
-package common
-
-type ParamKind uint8
-
-const (
-	ParamKindFilter ParamKind = iota
-	ParamKindAnswer
-	ParamKindEnum
-	ParamKindNumber
-	ParamKindDate
-	ParamKindDataset
-	ParamKindString
-	ParamKindTimestamp
-)
+package param
 
 type MultiParam struct {
-	kind  ParamKind
+	kind  Kind
 	value interface{}
 }
 

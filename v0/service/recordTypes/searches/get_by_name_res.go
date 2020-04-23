@@ -1,6 +1,9 @@
 package searches
 
-import . "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
+import (
+	. "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/common/param"
+)
 
 //  "definitions": {
 //    "properties": {
@@ -57,11 +60,11 @@ type SearchResponse struct {
 
 	/* Optional Fields */
 
-	Description                           OptionalString `json:"description"`
-	NewBuild                              OptionalString `json:"newBuild"`
-	AllowedPrimaryInputRecordClassNames   []string       `json:"allowedPrimaryInputRecordClassNames"`
-	AllowedSecondaryInputRecordClassNames []string       `json:"allowedSecondaryInputRecordClassNames"`
-	Parameters                            []MultiParam   `json:"parameters"`
+	Description                           OptionalString     `json:"description"`
+	NewBuild                              OptionalString     `json:"newBuild"`
+	AllowedPrimaryInputRecordClassNames   []string           `json:"allowedPrimaryInputRecordClassNames"`
+	AllowedSecondaryInputRecordClassNames []string           `json:"allowedSecondaryInputRecordClassNames"`
+	Parameters                            []param.MultiParam `json:"parameters"`
 	//    "parameters": {
 	//          "type": "array",
 	//          "items": [

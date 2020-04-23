@@ -14,6 +14,10 @@ const (
 	AlignRight  Align = "right"
 )
 
+func (a Align) IsValid() bool {
+	return a == AlignCenter || a == AlignLeft || a == AlignRight
+}
+
 func (a *Align) UnmarshalJSON(bytes []byte) error {
 	var tmp string
 
@@ -23,17 +27,11 @@ func (a *Align) UnmarshalJSON(bytes []byte) error {
 
 	align := Align(tmp)
 
-	switch align {
-	case AlignCenter:
-		fallthrough
-	case AlignLeft:
-		fallthrough
-	case AlignRight:
-		*a = align
-	default:
+	if !align.IsValid() {
 		return fmt.Errorf("invalid align value \"%s\"", tmp)
 	}
 
+	*a = align
 	return nil
 }
 
