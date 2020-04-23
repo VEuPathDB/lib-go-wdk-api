@@ -18,7 +18,7 @@ type StrategyListingItem struct {
 	IsValid         bool    `json:"isValid"`
 	StrategyId      uint    `json:"strategyId"`
 	RootStepId      uint    `json:"rootStepId"`
-	EstimatedSize   uint    `json:"estimatedSize"`
+	EstimatedSize   int     `json:"estimatedSize"`
 }
 
 func (l *StrategyListingItem) ParseCreatedTime() time.Time {
@@ -29,7 +29,7 @@ func (l *StrategyListingItem) ParseCreatedTime() time.Time {
 	}
 }
 
-func (l *StrategyListingItem) ParseLastViewed() time.Time   {
+func (l *StrategyListingItem) ParseLastViewed() time.Time {
 	if out, err := time.Parse(time.RFC3339Nano, l.LastViewed); err != nil {
 		panic(err)
 	} else {

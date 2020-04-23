@@ -19,7 +19,7 @@ type StrategyNoStepTree struct {
 	IsDeleted                 bool    `json:"isDeleted"`
 	IsValid                   bool    `json:"isValid"`
 	Organization              *string `json:"organization"`
-	EstimatedSize             *uint   `json:"estimatedSize"`
+	EstimatedSize             *int   `json:"estimatedSize"`
 	LeafAndTransformStepCount *uint   `json:"leafAndTransformStepCount"`
 	NameOfFirstStep           *string `json:"nameOfFirstStep"`
 }

@@ -10,7 +10,7 @@ func TestScope_IsValid(t *testing.T) {
 	C.Convey("Scope.IsValid", t, func() {
 		C.So(common.ScopeRecord.IsValid(), C.ShouldBeTrue)
 		C.So(common.ScopeResult.IsValid(), C.ShouldBeTrue)
-		C.So(common.Scope("saturate"), C.ShouldBeFalse)
+		C.So(common.Scope("saturate").IsValid(), C.ShouldBeFalse)
 	})
 }
 
