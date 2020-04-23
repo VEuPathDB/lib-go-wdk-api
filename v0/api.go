@@ -59,6 +59,10 @@ type Api interface {
 	// against a QA site.
 	UseAuthToken(token string) Api
 
+	// GetUrl returns the resolved URL in use by this API
+	// wrapper.
+	GetUrl() ApiUrl
+
 	GetServiceDetails() (service.Service, error)
 
 	MustGetServiceDetails() service.Service
@@ -111,6 +115,10 @@ func (a *api) UseAuthToken(tkn string) Api {
 	a.sessionId = getSessionId(a.url.String(), a.apiProps)
 
 	return a
+}
+
+func (a *api) GetUrl() ApiUrl {
+	return *a.url
 }
 
 func (a *api) GetServiceDetails() (res service.Service, err error) {
