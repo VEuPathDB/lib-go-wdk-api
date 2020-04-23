@@ -61,7 +61,7 @@ type Api interface {
 
 	// GetUrl returns the resolved URL in use by this API
 	// wrapper.
-	GetUrl() ApiUrl
+	GetUrl() *ApiUrl
 
 	GetServiceDetails() (service.Service, error)
 
@@ -117,8 +117,9 @@ func (a *api) UseAuthToken(tkn string) Api {
 	return a
 }
 
-func (a *api) GetUrl() ApiUrl {
-	return *a.url
+func (a *api) GetUrl() *ApiUrl {
+	tmp := *a.url
+	return &tmp
 }
 
 func (a *api) GetServiceDetails() (res service.Service, err error) {
