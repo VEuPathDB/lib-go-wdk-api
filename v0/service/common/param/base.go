@@ -1,6 +1,8 @@
 package param
 
-import "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
+import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
+)
 
 // Base
 //
@@ -20,7 +22,7 @@ type Base struct {
 
 	/* WDK Optional Fields */
 
-	InitialDisplayValue common.OptionalString `json:"initialDisplayValue"`
+	InitialDisplayValue optional.String `json:"initialDisplayValue"`
 
 	/* SDK Internal Fields */
 }

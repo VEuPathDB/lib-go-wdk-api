@@ -219,7 +219,7 @@ func TestVocabulary_GetAsTree(t *testing.T) {
 }
 
 func TestVocabulary_MarshalJSON(t *testing.T) {
-	C.Convey("Vocabulary.GetAsTree", t, func() {
+	C.Convey("Vocabulary.MarshalJSON", t, func() {
 		C.Convey("initial state", func() {
 			var test param.Vocabulary
 			a, b := test.MarshalJSON()
@@ -267,6 +267,66 @@ func TestVocabulary_MarshalJSON(t *testing.T) {
 			a, b := test.MarshalJSON()
 			C.So(b, C.ShouldBeNil)
 			C.So(a, C.ShouldResemble, []byte("null"))
+		})
+	})
+}
+
+func TestVocabulary_UnmarshalJSON(t *testing.T) {
+	C.Convey("Vocabulary.UnmarshalJSON", t, func() {
+		C.Convey("unmarshal null", func() {
+			var test param.Vocabulary
+			C.So(test.UnmarshalJSON([]byte("null")), C.ShouldBeNil)
+			C.So(test.Exists(), C.ShouldBeFalse)
+		})
+
+		C.Convey("unmarshal invalid json", func() {
+			tests := [][]byte{[]byte("nigel"), []byte("{arf}"), []byte("[boo]")}
+
+			for _, test := range tests {
+				var voc param.Vocabulary
+				C.So(voc.UnmarshalJSON(test), C.ShouldNotBeNil)
+				C.So(voc.Exists(), C.ShouldBeFalse)
+			}
+		})
+
+		C.Convey("unmarshal incorrect type", func() {
+			var test param.Vocabulary
+			C.So(test.UnmarshalJSON([]byte(`"hello"`)), C.ShouldNotBeNil)
+			C.So(test.Exists(), C.ShouldBeFalse)
+		})
+
+		C.Convey("unmarshal table", func() {
+			var test param.Vocabulary
+			value := `[["a","b","c"],["d","e","f"]]`
+
+			C.So(test.UnmarshalJSON([]byte(value)), C.ShouldBeNil)
+			C.So(test.Exists(), C.ShouldBeTrue)
+			C.So(test.IsTableVocab(), C.ShouldBeTrue)
+			C.So(test.IsTreeVocab(), C.ShouldBeFalse)
+			C.So(test.GetAsTable(), C.ShouldResemble, param.TableVocab{
+				[3]string{"a", "b", "c"},
+				[3]string{"d", "e", "f"},
+			})
+		})
+
+		C.Convey("unmarshal tree", func() {
+			var test param.Vocabulary
+			value := `{"data":{"term":"a","display":"apple"},"children":[{"data":{"term":"b","display":"blueberry"}},{"data":{"term":"c","display":"cranberry"}}]}`
+
+			C.So(test.UnmarshalJSON([]byte(value)), C.ShouldBeNil)
+			C.So(test.Exists(), C.ShouldBeTrue)
+			C.So(test.IsTableVocab(), C.ShouldBeFalse)
+			C.So(test.IsTreeVocab(), C.ShouldBeTrue)
+			C.So(test.GetAsTree(), C.ShouldResemble, &param.TreeVocab{
+				Data: param.TreeVocabData{
+					Term:    "a",
+					Display: "apple",
+				},
+				Children: []param.TreeVocab{
+					{Data: param.TreeVocabData{Term: "b", Display: "blueberry"}},
+					{Data: param.TreeVocabData{Term: "c", Display: "cranberry"}},
+				},
+			})
 		})
 	})
 }

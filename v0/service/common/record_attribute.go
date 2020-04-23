@@ -1,5 +1,7 @@
 package common
 
+import "github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
+
 // RecordAttribute
 type RecordAttribute struct {
 	/* Required Properties */
@@ -9,14 +11,14 @@ type RecordAttribute struct {
 	/* Optional Properties */
 
 	Align         OptionalAlign       `json:"align"`
-	DisplayName   OptionalString      `json:"displayName"`
+	DisplayName   optional.String     `json:"displayName"`
 	Formats       RecordReporterArray `json:"formats"`
-	Help          OptionalString      `json:"help"`
-	IsDisplayable OptionalBool        `json:"isDisplayable"`
-	IsInReport    OptionalBool        `json:"isInReport"`
-	IsRemovable   OptionalBool        `json:"isRemovable"`
-	IsSortable    OptionalBool        `json:"isSortable"`
+	Help          optional.String     `json:"help"`
+	IsDisplayable optional.Bool       `json:"isDisplayable"`
+	IsInReport    optional.Bool       `json:"isInReport"`
+	IsRemovable   optional.Bool       `json:"isRemovable"`
+	IsSortable    optional.Bool       `json:"isSortable"`
 	Properties    OptionalProperties  `json:"properties"`
-	TruncateTo    OptionalUint        `json:"truncateTo"`
-	Type          OptionalString      `json:"type"`
+	TruncateTo    optional.Uint       `json:"truncateTo"`
+	Type          optional.String     `json:"type"`
 }

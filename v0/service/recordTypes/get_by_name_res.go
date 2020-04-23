@@ -1,6 +1,7 @@
 package recordTypes
 
 import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes/searches"
 )
@@ -25,11 +26,11 @@ type RecordTypeResponse struct {
 
 	/* Optional Fields */
 
-	NativeDisplayName            common.OptionalString     `json:"nativeDisplayName"`
-	NativeDisplayNamePlural      common.OptionalString     `json:"nativeDisplayNamePlural"`
-	NativeShortDisplayName       common.OptionalString     `json:"nativeShortDisplayName"`
-	NativeShortDisplayNamePlural common.OptionalString     `json:"nativeShortDisplayNamePlural"`
-	IconName                     common.OptionalString     `json:"iconName"`
+	NativeDisplayName            optional.String           `json:"nativeDisplayName"`
+	NativeDisplayNamePlural      optional.String           `json:"nativeDisplayNamePlural"`
+	NativeShortDisplayName       optional.String           `json:"nativeShortDisplayName"`
+	NativeShortDisplayNamePlural optional.String           `json:"nativeShortDisplayNamePlural"`
+	IconName                     optional.String           `json:"iconName"`
 	Properties                   common.OptionalProperties `json:"properties"`
-	RecordIdAttributeName        common.OptionalString     `json:"recordIdAttributeName"`
+	RecordIdAttributeName        optional.String           `json:"recordIdAttributeName"`
 }

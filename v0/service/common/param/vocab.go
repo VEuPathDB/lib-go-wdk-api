@@ -12,36 +12,58 @@ type Vocabulary struct {
 	isTable bool
 }
 
+// Exists returns whether this Vocabulary struct contains
+// any value.
 func (v *Vocabulary) Exists() bool {
 	return v.value != nil
 }
 
+// Clear removes the value contained in this Vocabulary and
+// returns it to an empty state.
 func (v *Vocabulary) Clear() {
 	v.value = nil
 	v.isTree = false
 	v.isTable = false
 }
 
+// SetTreeVocab sets this Vocabulary's value to the given
+// TreeVocab and configures the internal state to reflect
+// the value type.
 func (v *Vocabulary) SetTreeVocab(val TreeVocab) {
 	v.value = val
 	v.isTree = true
 	v.isTable = false
 }
 
+// SetTreeVocab sets this Vocabulary's value to the given
+// TableVocab and configures the internal state to reflect
+// the value type.
 func (v *Vocabulary) SetTableVocab(val TableVocab) {
 	v.value = val
 	v.isTree = false
 	v.isTable = true
 }
 
+// IsTreeVocab returns whether or not this Vocabulary
+// contains a TreeVocab value.
 func (v *Vocabulary) IsTreeVocab() bool {
 	return v.isTree
 }
 
+// IsTreeVocab returns whether or not this Vocabulary
+// contains a TableVocab value.
 func (v *Vocabulary) IsTableVocab() bool {
 	return v.isTable
 }
 
+// GetAsTable returns the internal value of this Vocabulary
+// as a TableVocab.
+//
+// If the internal value exists and is not a TableVocab,
+// this method will panic.  Verify that the contained value
+// is a TableVocab using the IsTableVocab method.
+//
+// If this Vocabulary is empty, returns nil.
 func (v *Vocabulary) GetAsTable() TableVocab {
 	if v.value == nil {
 		return nil
@@ -54,6 +76,19 @@ func (v *Vocabulary) GetAsTable() TableVocab {
 	return v.value.(TableVocab)
 }
 
+// GetAsTree returns the internal value of this Vocabulary
+// as a TreeVocab.
+//
+// If the internal value exists and is not a TreeVocab,
+// this method will panic.  Verify that the contained value
+// is a TreeVocab using the IsTableVocab method.
+//
+// If this Vocabulary is empty, returns nil.
+//
+// The pointer returned by this method cannot be used to
+// modify the internal state of this Vocabulary, if it is
+// desired to update the internal tree, call SetTreeVocab
+// with the updated tree.
 func (v *Vocabulary) GetAsTree() *TreeVocab {
 	if v.value == nil {
 		return nil
@@ -78,6 +113,7 @@ func (v *Vocabulary) UnmarshalJSON(bytes []byte) error {
 			return err
 		}
 		v.value = tmp
+		v.isTable = true
 		v.isTree = false
 	case '{':
 		var tmp TreeVocab
@@ -86,8 +122,12 @@ func (v *Vocabulary) UnmarshalJSON(bytes []byte) error {
 		}
 		v.value = tmp
 		v.isTree = true
+		v.isTable = false
 	case 'n':
 		if len(bytes) == 4 && string(bytes) == "null" {
+			v.value = nil
+			v.isTree = false
+			v.isTable = false
 			return nil
 		}
 		return errors.New("invalid json input starting with 'n'")
