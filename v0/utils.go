@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Foxcapades/Go-ChainRequest"
+	"github.com/Foxcapades/Go-ChainRequest/request/header"
 	"github.com/Foxcapades/Go-ChainRequest/simple"
 )
 
@@ -22,7 +23,8 @@ func prepGet(url string, props *apiProps) creq.Request {
 }
 
 func prepPost(url string, props *apiProps) creq.Request {
-	return prepCreq(simple.PostRequest(url), props)
+	return prepCreq(simple.PostRequest(url).
+		SetHeader(header.CONTENT_TYPE, "application/json"), props)
 }
 
 func prepCreq(req creq.Request, props *apiProps) creq.Request {
