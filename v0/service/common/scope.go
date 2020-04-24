@@ -14,7 +14,7 @@ type Scope string
 
 const (
 	ScopeRecord Scope = "record"
-	ScopeResult Scope = "result"
+	ScopeResult Scope = "results"
 )
 
 func (s Scope) IsValid() bool {
