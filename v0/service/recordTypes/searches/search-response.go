@@ -51,11 +51,15 @@ type SearchResponse struct {
 	//    "filters": {
 	//      "$ref": "#/definitions/filter-def-array"
 	//    },
-	Filters           []string          `json:"filters"`
+	//Filters           []string          `json:"filters"`
+
+	//
 	IsAnalyzable      bool              `json:"isAnalyzable"`
 	DynamicAttributes []RecordAttribute `json:"dynamicAttributes"`
 	Groups            []Group           `json:"groups"`
 	//Parameters                            []param.MultiParam `json:"parameters"`
+
+	//
 	Properties            Properties `json:"properties"`
 	OutputRecordClassName string     `json:"outputRecordClassName"`
 	//    "summaryViewPlugins": {
