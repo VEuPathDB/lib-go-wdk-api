@@ -1,24 +1,27 @@
 package common
 
-import "time"
+import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
+	"time"
+)
 
 type StrategyListingItem struct {
-	Description     string  `json:"description"`
-	Name            string  `json:"name"`
-	Author          string  `json:"author"`
-	RecordClassName *string `json:"recordClassName"`
-	Signature       string  `json:"signature"`
-	Organization    string  `json:"organization"`
-	CreatedTime     string  `json:"createdTime"`
-	LastViewed      string  `json:"lastViewed"`
-	LastModified    string  `json:"lastModified"`
-	IsPublic        bool    `json:"isPublic"`
-	IsSaved         bool    `json:"isSaved"`
-	IsDeleted       bool    `json:"isDeleted"`
-	IsValid         bool    `json:"isValid"`
-	StrategyId      uint    `json:"strategyId"`
-	RootStepId      uint    `json:"rootStepId"`
-	EstimatedSize   int     `json:"estimatedSize"`
+	Description     string          `json:"description"`
+	Name            string          `json:"name"`
+	Author          string          `json:"author"`
+	RecordClassName optional.String `json:"recordClassName"`
+	Signature       string          `json:"signature"`
+	Organization    string          `json:"organization"`
+	CreatedTime     string          `json:"createdTime"`
+	LastViewed      string          `json:"lastViewed"`
+	LastModified    string          `json:"lastModified"`
+	IsPublic        bool            `json:"isPublic"`
+	IsSaved         bool            `json:"isSaved"`
+	IsDeleted       bool            `json:"isDeleted"`
+	IsValid         bool            `json:"isValid"`
+	StrategyId      uint            `json:"strategyId"`
+	RootStepId      uint            `json:"rootStepId"`
+	EstimatedSize   int             `json:"estimatedSize"`
 }
 
 func (l *StrategyListingItem) ParseCreatedTime() time.Time {

@@ -1,101 +1,52 @@
 package common
 
-import "time"
+import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
+	"time"
+)
 
 type StrategyNoStepTree struct {
-	StrategyId                uint    `json:"strategyId"`
-	Description               *string `json:"description"`
-	Name                      *string `json:"name"`
-	Author                    *string `json:"author"`
-	RootStepId                uint    `json:"rootStepId"`
-	RecordClassName           *string `json:"recordClassName"`
-	Signature                 *string `json:"signature"`
-	CreatedTime               *string `json:"createdTime"`
-	LastViewed                *string `json:"lastViewed"`
-	LastModified              *string `json:"lastModified"`
-	ReleaseVersion            *string `json:"releaseVersion"`
-	IsPublic                  bool    `json:"isPublic"`
-	IsSaved                   bool    `json:"isSaved"`
-	IsDeleted                 bool    `json:"isDeleted"`
-	IsValid                   bool    `json:"isValid"`
-	Organization              *string `json:"organization"`
-	EstimatedSize             *int   `json:"estimatedSize"`
-	LeafAndTransformStepCount *uint   `json:"leafAndTransformStepCount"`
-	NameOfFirstStep           *string `json:"nameOfFirstStep"`
-}
-
-func (l *StrategyNoStepTree) HasDescription() bool {
-	return l.Description != nil
-}
-
-func (l *StrategyNoStepTree) HasName() bool {
-	return l.Name != nil
-}
-
-func (l *StrategyNoStepTree) HasAuthor() bool {
-	return l.Author != nil
-}
-
-func (l *StrategyNoStepTree) HasRecordClassName() bool {
-	return l.RecordClassName != nil
-}
-
-func (l *StrategyNoStepTree) HasSignature() bool {
-	return l.Signature != nil
-}
-
-func (l *StrategyNoStepTree) HasCreatedTime() bool {
-	return l.CreatedTime != nil
+	StrategyId                uint            `json:"strategyId"`
+	Description               optional.String `json:"description"`
+	Name                      optional.String `json:"name"`
+	Author                    optional.String `json:"author"`
+	RootStepId                uint            `json:"rootStepId"`
+	RecordClassName           optional.String `json:"recordClassName"`
+	Signature                 optional.String `json:"signature"`
+	CreatedTime               optional.String `json:"createdTime"`
+	LastViewed                optional.String `json:"lastViewed"`
+	LastModified              optional.String `json:"lastModified"`
+	ReleaseVersion            optional.String `json:"releaseVersion"`
+	IsPublic                  bool            `json:"isPublic"`
+	IsSaved                   bool            `json:"isSaved"`
+	IsDeleted                 bool            `json:"isDeleted"`
+	IsValid                   bool            `json:"isValid"`
+	Organization              optional.String `json:"organization"`
+	EstimatedSize             optional.Int            `json:"estimatedSize"`
+	LeafAndTransformStepCount optional.Uint   `json:"leafAndTransformStepCount"`
+	NameOfFirstStep           optional.String `json:"nameOfFirstStep"`
 }
 
 func (l *StrategyNoStepTree) ParseCreatedTime() time.Time {
-	if out, err := time.Parse(time.RFC3339Nano, *l.CreatedTime); err != nil {
+	if out, err := time.Parse(time.RFC3339Nano, l.CreatedTime.Get()); err != nil {
 		panic(err)
 	} else {
 		return out
 	}
-}
-
-func (l *StrategyNoStepTree) HasLastViewed() bool {
-	return l.LastViewed != nil
 }
 
 func (l *StrategyNoStepTree) ParseLastViewed() time.Time {
-	if out, err := time.Parse(time.RFC3339Nano, *l.LastViewed); err != nil {
+	if out, err := time.Parse(time.RFC3339Nano, l.LastViewed.Get()); err != nil {
 		panic(err)
 	} else {
 		return out
 	}
-}
-
-func (l *StrategyNoStepTree) HasLastModified() bool {
-	return l.LastModified != nil
 }
 
 func (l *StrategyNoStepTree) ParseLastModified() time.Time {
-	if out, err := time.Parse(time.RFC3339Nano, *l.LastModified); err != nil {
+	if out, err := time.Parse(time.RFC3339Nano, l.LastModified.Get()); err != nil {
 		panic(err)
 	} else {
 		return out
 	}
-}
-
-func (l *StrategyNoStepTree) HasReleaseVersion() bool {
-	return l.ReleaseVersion != nil
-}
-
-func (l *StrategyNoStepTree) HasOrganization() bool {
-	return l.Organization != nil
-}
-
-func (l *StrategyNoStepTree) HasEstimatedSize() bool {
-	return l.EstimatedSize != nil
-}
-
-func (l *StrategyNoStepTree) HasLeafAndTransformStepCount() bool {
-	return l.LeafAndTransformStepCount != nil
-}
-
-func (l *StrategyNoStepTree) HasNameOfFirstStep() bool {
-	return l.NameOfFirstStep != nil
 }

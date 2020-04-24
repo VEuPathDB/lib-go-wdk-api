@@ -1,6 +1,9 @@
 package answer
 
-import "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
+import (
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
+)
 
 type PostResponse struct {
 	Records []common.RecordInstanceResponse `json:"records"`
@@ -8,34 +11,10 @@ type PostResponse struct {
 }
 
 type PostResponseMeta struct {
-	RecordClassName        *string  `json:"recordClassName"`
-	TotalCount             *uint    `json:"totalCount"`
-	ResponseCount          *uint    `json:"responseCount"`
-	Tables                 []string `json:"tables"`
-	Attributes             []string `json:"attributes"`
-	CachePreviouslyExisted bool     `json:"cachePreviouslyExisted"`
-}
-
-func (p *PostResponseMeta) HasRecordClassName() bool {
-	return p.RecordClassName != nil
-}
-
-func (p *PostResponseMeta) GetRecordClassName() string {
-	return *p.RecordClassName
-}
-
-func (p *PostResponseMeta) HasTotalCount() bool {
-	return p.TotalCount != nil
-}
-
-func (p *PostResponseMeta) GetTotalCount() uint {
-	return *p.TotalCount
-}
-
-func (p *PostResponseMeta) HasResponseCount() bool {
-	return p.ResponseCount != nil
-}
-
-func (p *PostResponseMeta) GetResponseCount() uint {
-	return *p.ResponseCount
+	RecordClassName        optional.String `json:"recordClassName"`
+	TotalCount             optional.Uint   `json:"totalCount"`
+	ResponseCount          optional.Uint   `json:"responseCount"`
+	Tables                 []string        `json:"tables"`
+	Attributes             []string        `json:"attributes"`
+	CachePreviouslyExisted bool            `json:"cachePreviouslyExisted"`
 }

@@ -22,10 +22,16 @@ const (
 //
 //   site.com
 //   site.com?some=query&string=value
+//   site.com/app
+//   site.com/app?some=query&string=value
 //   http://site.com
 //   http://site.com?some=query&string=value
+//   http://site.com/app
+//   http://site.com/app?some=query&string=value
 //   https://site.com
 //   https://site.com?some=query&string=value
+//   https://site.com/app
+//   https://site.com/app?some=query&string=value
 func NewApiUrl(url string) (*ApiUrl, error) {
 	out := new(ApiUrl)
 
@@ -84,7 +90,7 @@ func (a *ApiUrl) parseUrl(url string) error {
 	if !strings.HasPrefix(url, "http") {
 		url = "https://" + url
 	} else if url[4] != 's' {
-		url = strings.Replace(url, "http:", "https", 1)
+		url = strings.Replace(url, "http:", "https:", 1)
 	}
 	a.base = url
 
@@ -93,6 +99,7 @@ func (a *ApiUrl) parseUrl(url string) error {
 
 func (a *ApiUrl) resolve() error {
 	res := simple.GetRequest(a.String()).DisableRedirects().Submit()
+	defer res.Close()
 
 	if err := res.GetError(); err != nil {
 		return err

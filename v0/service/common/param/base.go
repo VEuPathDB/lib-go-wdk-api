@@ -23,6 +23,4 @@ type Base struct {
 	/* WDK Optional Fields */
 
 	InitialDisplayValue optional.String `json:"initialDisplayValue"`
-
-	/* SDK Internal Fields */
 }

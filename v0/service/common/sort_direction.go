@@ -5,6 +5,10 @@ import (
 	"fmt"
 )
 
+const (
+	errBadSortDir = "invalid sort direction \"%s\""
+)
+
 type SortDirection string
 
 const (
@@ -25,8 +29,15 @@ func (s *SortDirection) UnmarshalJSON(bytes []byte) error {
 	case SortDirectionAsc, SortDirectionDesc:
 		*s = sd
 	default:
-		return fmt.Errorf("invalid sort direction \"%s\"", tmp)
+		return fmt.Errorf(errBadSortDir, tmp)
 	}
 
 	return nil
+}
+
+func (s SortDirection) MarshalJSON() ([]byte, error) {
+	if s != SortDirectionAsc && s != SortDirectionDesc {
+		return nil, fmt.Errorf(errBadSortDir, s)
+	}
+	return json.Marshal(string(s))
 }
