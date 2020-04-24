@@ -78,10 +78,10 @@ type SearchResponse struct {
 	//    },
 
 	//
-	UrlSegment       string        `json:"urlSegment"`
-	ShortDisplayName string        `json:"shortDisplayName"`
-	DefaultSorting   AttributeSort `json:"defaultSorting"`
-	ParamNames       []string      `json:"paramNames"`
+	UrlSegment       string          `json:"urlSegment"`
+	ShortDisplayName string          `json:"shortDisplayName"`
+	DefaultSorting   []AttributeSort `json:"defaultSorting"`
+	ParamNames       []string        `json:"paramNames"`
 
 	/* Optional Fields */
 
