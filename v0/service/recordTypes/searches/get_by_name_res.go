@@ -3,7 +3,6 @@ package searches
 import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
 	. "github.com/VEuPathDB/lib-go-wdk-api/v0/service/common"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/common/param"
 )
 
 //  "definitions": {
@@ -39,80 +38,26 @@ import (
 //    }
 //  },
 
-//    "urlSegment",
-//    "shortDisplayName",
-//    "outputRecordClassName",
-//    "defaultSorting",
-//    "summaryViewPlugins",
-//    "properties",
-//    "paramNames"
 type SearchResponse struct {
 	/* Required Fields */
 
-	DefaultAttributes       []string          `json:"defaultAttributes"`
-	DefaultSummaryView      string            `json:"defaultSummaryView"`
-	NoSummaryOnSingleRecord bool              `json:"noSummaryOnSingleRecord"`
-	DisplayName             string            `json:"displayName"`
-	FullName                string            `json:"fullName"`
-	Filters                 []string          `json:"filters"`
-	IsAnalyzable            bool              `json:"isAnalyzable"`
-	DynamicAttributes       []RecordAttribute `json:"dynamicAttributes"`
-	Groups                  []Group           `json:"groups"`
+	DefaultAttributes       []string `json:"defaultAttributes"`
+	DefaultSummaryView      string   `json:"defaultSummaryView"`
+	NoSummaryOnSingleRecord bool     `json:"noSummaryOnSingleRecord"`
+	DisplayName             string   `json:"displayName"`
+	FullName                string   `json:"fullName"`
 
-	/* Optional Fields */
-
-	Description                           optional.String    `json:"description"`
-	NewBuild                              optional.String    `json:"newBuild"`
-	AllowedPrimaryInputRecordClassNames   []string           `json:"allowedPrimaryInputRecordClassNames"`
-	AllowedSecondaryInputRecordClassNames []string           `json:"allowedSecondaryInputRecordClassNames"`
-	Parameters                            []param.MultiParam `json:"parameters"`
-	//    "parameters": {
-	//          "type": "array",
-	//          "items": [
-	//            {
-	//              "$ref": "../../includes/params/filter-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/answer-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/enum-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/string-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/number-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/date-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/dataset-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/filter-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/string-param.json"
-	//            },
-	//            {
-	//              "$ref": "../../includes/params/timestamp-param.json"
-	//            }
-	//          ]
+	// Filters has conflicting definitions, the other is:
+	//    "filters": {
+	//      "$ref": "#/definitions/filter-def-array"
 	//    },
-	//    "properties": {
-	//      "$ref": "#/definitions/properties"
-	//    },
-	//    "outputRecordClassName": {
-	//      "type": "string"
-	//    },
-	//    "shortDisplayName": {
-	//      "type": "string"
-	//    },
-	//    "summary": {
-	//      "type": "string"
-	//    },
+	Filters           []string          `json:"filters"`
+	IsAnalyzable      bool              `json:"isAnalyzable"`
+	DynamicAttributes []RecordAttribute `json:"dynamicAttributes"`
+	Groups            []Group           `json:"groups"`
+	//Parameters                            []param.MultiParam `json:"parameters"`
+	Properties            Properties `json:"properties"`
+	OutputRecordClassName string     `json:"outputRecordClassName"`
 	//    "summaryViewPlugins": {
 	//      "type": "array",
 	//      "items": {
@@ -131,33 +76,24 @@ type SearchResponse struct {
 	//        }
 	//      }
 	//    },
-	//    "urlSegment": {
-	//      "type": "string"
-	//    },
-	//    "iconName": {
-	//      "type": "string"
-	//    },
-	//    "help": {
-	//      "type": "string"
-	//    },
-	//    "reviseBuild": {
-	//      "type": "string"
-	//    },
-	//    "defaultSorting": {
-	//      "$ref": "../../includes/sorting-spec.json"
-	//    },
-	//    "filters": {
-	//      "$ref": "#/definitions/filter-def-array"
-	//    },
-	//    "paramNames": {
-	//      "type": "array",
-	//      "items": {
-	//         "type": "string"
-	//      }
-	//    },
-	//    "queryName": {
-	//      "type": "string"
-	//    }
+
+	//
+	UrlSegment       string        `json:"urlSegment"`
+	ShortDisplayName string        `json:"shortDisplayName"`
+	DefaultSorting   AttributeSort `json:"defaultSorting"`
+	ParamNames       []string      `json:"paramNames"`
+
+	/* Optional Fields */
+
+	Description                           optional.String `json:"description"`
+	NewBuild                              optional.String `json:"newBuild"`
+	AllowedPrimaryInputRecordClassNames   []string        `json:"allowedPrimaryInputRecordClassNames"`
+	AllowedSecondaryInputRecordClassNames []string        `json:"allowedSecondaryInputRecordClassNames"`
+	Summary                               optional.String `json:"summary"`
+	IconName                              optional.String `json:"iconName"`
+	Help                                  optional.String `json:"help"`
+	ReviseBuild                           optional.String `json:"reviseBuild"`
+	Query                                 optional.String `json:"query"`
 }
 
 type Group struct {
