@@ -62,10 +62,20 @@ type Api interface {
 
 	// GetUrl returns the resolved URL in use by this API
 	// wrapper.
-	GetUrl() *path.ApiUrl
+	GetUrl() path.ApiUrl
 
+	// UrlBuilder returns the internal URL builder used by
+	// this API class.
+	UrlBuilder() path.Builder
+
+	// GetServiceDetails retrieves and unmarshals the response
+	// from the WDK API details endpoint and returns either
+	// the result on success or an error if the request or
+	// unmarshaling failed.
 	GetServiceDetails() (service.Details, error)
 
+	// MustGetServiceDetails performs the same steps as
+	// GetServiceDetails except it panics on error.
 	MustGetServiceDetails() service.Details
 
 	GetPublicStrategyList() (strategy.List, error)
@@ -92,7 +102,7 @@ type api struct {
 
 	gotSessionId bool
 
-	url  *path.ApiUrl
+	url  path.ApiUrl
 	path path.Builder
 }
 
@@ -102,6 +112,10 @@ func (a *api) ctxLog() *logrus.Entry {
 		"sessionId":     a.sessionId,
 		"authToken":     a.authToken,
 	})
+}
+
+func (a *api) UrlBuilder() path.Builder {
+	return a.path
 }
 
 func (a *api) EnableSessionSharing(val bool) Api {
@@ -129,9 +143,8 @@ func (a *api) UseAuthToken(tkn string) Api {
 	return a
 }
 
-func (a *api) GetUrl() *path.ApiUrl {
-	tmp := *a.url
-	return &tmp
+func (a *api) GetUrl() path.ApiUrl {
+	return a.url
 }
 
 func (a *api) GetServiceDetails() (res service.Details, err error) {
@@ -251,8 +264,8 @@ func (a *api) CurrentUserApi() UserApi {
 
 func (a *api) RecordApiFor(recordType string) RecordApi {
 	return &recordApi{
-		recordType: recordType,
-		url:        path.NewRecordBuilder(recordType, a.url),
-		props:      &a.apiProps,
+		rType: recordType,
+		url:   path.NewRecordBuilder(a.url, recordType),
+		props: &a.apiProps,
 	}
 }

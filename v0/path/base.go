@@ -13,7 +13,7 @@ const (
 	urlRecordType   = urlRecordTypes + "/%s"
 )
 
-func NewBuilder(url *ApiUrl) Builder {
+func NewBuilder(url ApiUrl) Builder {
 	return &builder{url}
 }
 
@@ -36,7 +36,7 @@ type Builder interface {
 }
 
 type builder struct {
-	url *ApiUrl
+	url ApiUrl
 }
 
 func (p *builder) Service() string {

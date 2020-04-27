@@ -2,6 +2,7 @@ package path
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -32,8 +33,8 @@ const (
 //   https://site.com?some=query&string=value
 //   https://site.com/app
 //   https://site.com/app?some=query&string=value
-func NewApiUrl(url string) (*ApiUrl, error) {
-	out := new(ApiUrl)
+func NewApiUrl(url string) (ApiUrl, error) {
+	out := new(apiUrl)
 
 	if err := out.parseUrl(url); err != nil {
 		return nil, err
@@ -46,17 +47,49 @@ func NewApiUrl(url string) (*ApiUrl, error) {
 	return out, nil
 }
 
-type ApiUrl struct {
+// newApiUrl constructs a new ApiUrl instance with the given
+// inputs.
+//
+// This method performs no validation.
+func newApiUrl(url, query string) ApiUrl {
+	return &apiUrl{
+		base:  url,
+		query: query,
+		hasQ:  len(query) > 0,
+	}
+}
+
+// ApiUrl wraps a validated URL base and query for internal
+// use.
+type ApiUrl interface {
+	fmt.Stringer
+
+	BaseUrl() string
+	Query() string
+
+	wrap(string) string
+	wrapQuery(string, string) string
+}
+
+type apiUrl struct {
 	base  string
 	query string
 	hasQ  bool
 }
 
-func (a *ApiUrl) String() string {
+func (a *apiUrl) BaseUrl() string {
+	return a.base
+}
+
+func (a *apiUrl) Query() string {
+	return a.query
+}
+
+func (a *apiUrl) String() string {
 	return a.base + a.query
 }
 
-func (a *ApiUrl) wrap(in string) string {
+func (a *apiUrl) wrap(in string) string {
 	if a.hasQ {
 		return a.base + in + a.query
 	} else {
@@ -64,7 +97,7 @@ func (a *ApiUrl) wrap(in string) string {
 	}
 }
 
-func (a *ApiUrl) wrapQuery(in, q string) string {
+func (a *apiUrl) wrapQuery(in, q string) string {
 	if a.hasQ {
 		return a.base + in + a.query + "&" + q
 	} else {
@@ -72,7 +105,7 @@ func (a *ApiUrl) wrapQuery(in, q string) string {
 	}
 }
 
-func (a *ApiUrl) parseUrl(url string) error {
+func (a *apiUrl) parseUrl(url string) error {
 	if i := strings.IndexByte(url, '?'); i > -1 {
 		a.query = url[i:]
 		a.hasQ = true
@@ -97,7 +130,7 @@ func (a *ApiUrl) parseUrl(url string) error {
 	return nil
 }
 
-func (a *ApiUrl) resolve() error {
+func (a *apiUrl) resolve() error {
 	res := simple.GetRequest(a.String()).DisableRedirects().Submit()
 	defer res.Close()
 

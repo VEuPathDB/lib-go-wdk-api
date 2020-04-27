@@ -8,6 +8,10 @@ import (
 )
 
 type UserApi interface {
+	// UrlBuilder returns the internal URL builder used by
+	// this API class.
+	UrlBuilder() path.UserPathBuilder
+
 	// GetStrategies returns a listing of strategies owned by
 	// the current user.
 	GetStrategies() (strategy.List, error)
@@ -30,7 +34,7 @@ type UserApi interface {
 }
 
 type userApi struct {
-	builder path.UserBuilder
+	builder path.UserPathBuilder
 	userId  string
 	props   *apiProps
 }
@@ -41,6 +45,10 @@ func (u *userApi) ctxLog() *logrus.Entry {
 		"sessionId":     u.props.sessionId,
 		"authToken":     u.props.authToken,
 	})
+}
+
+func (u *userApi) UrlBuilder() path.UserPathBuilder {
+	return u.builder
 }
 
 func (u *userApi) GetStrategies() (res strategy.List, err error) {

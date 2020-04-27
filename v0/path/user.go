@@ -12,31 +12,32 @@ const (
 	urlUserStrategy   = urlUserStrategies + "/%d"
 )
 
-type UserBuilder interface {
+type UserPathBuilder interface {
 	Strategies() string
 	Strategy(strategyId uint) string
 }
 
-func NewUserBuilder(url *ApiUrl, userId uint) UserBuilder {
-	tmp := *url
-	tmp.base = tmp.base + fmt.Sprintf(urlUser, strconv.FormatUint(uint64(userId), 10))
-	return &userPathBuilder{&tmp}
+func NewUserBuilder(url ApiUrl, userId uint) UserPathBuilder {
+	return &userPathBuilder{
+		url: newApiUrl(url.BaseUrl() +
+			fmt.Sprintf(urlUser, strconv.FormatUint(uint64(userId), 10))),
+	}
 }
 
-func CurrentPathBuilder(url *ApiUrl) UserBuilder {
-	tmp := *url
-	tmp.base = tmp.base + fmt.Sprintf(urlUser, userCurrent)
-	return &userPathBuilder{&tmp}
+func CurrentPathBuilder(url ApiUrl) UserPathBuilder {
+	return &userPathBuilder{
+		url: newApiUrl(url.BaseUrl() + fmt.Sprintf(urlUser, userCurrent)),
+	}
 }
 
 type userPathBuilder struct {
-	url *ApiUrl
+	url ApiUrl
 }
 
 func (u *userPathBuilder) Strategies() string {
-	return u.url.base + urlUserStrategies + u.url.query
+	return u.url.wrap(urlUserStrategies)
 }
 
 func (u *userPathBuilder) Strategy(stratId uint) string {
-	return u.url.base + fmt.Sprintf(urlUserStrategy, stratId) + u.url.query
+	return u.url.wrap(fmt.Sprintf(urlUserStrategy, stratId))
 }

@@ -15,7 +15,13 @@ const (
 	mnMustGetSearch   = mnRecordPrefix + ".MustGetSearch"
 )
 
+// RecordApi contains methods for dealing with the
+// record-type WDK sub-api.
 type RecordApi interface {
+	// UrlBuilder returns the internal URL builder used by
+	// this API class.
+	UrlBuilder() path.RecordPathBuilder
+
 	// GetSearches returns the list of available searches for
 	// the current record type, or an error if the request
 	// failed or response could not be parsed.
@@ -36,9 +42,9 @@ type RecordApi interface {
 }
 
 type recordApi struct {
-	recordType string
-	url        path.RecordBuilder
-	props      *apiProps
+	rType string
+	url   path.RecordPathBuilder
+	props *apiProps
 }
 
 func (r *recordApi) ctxLog() *logrus.Entry {
@@ -46,8 +52,12 @@ func (r *recordApi) ctxLog() *logrus.Entry {
 		"shareSessions": r.props.oneSession,
 		"sessionId":     r.props.sessionId,
 		"authToken":     r.props.authToken,
-		"recordType":    r.recordType,
+		"recordType":    r.rType,
 	})
+}
+
+func (r *recordApi) UrlBuilder() path.RecordPathBuilder {
+	return r.url
 }
 
 func (r *recordApi) GetSearches() (res search.List, err error) {

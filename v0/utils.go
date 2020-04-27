@@ -2,7 +2,7 @@ package wdk
 
 import (
 	"encoding/json"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/err"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/except"
 	"net/http"
 	"strings"
 
@@ -72,21 +72,25 @@ func getSessionId(url string, props apiProps) string {
 	return cookie.Value
 }
 
-func subAndParse(req creq.Request, val interface{}) (e error) {
+func subAndParse(req creq.Request, val interface{}) error {
 	res := req.Submit()
 	defer res.Close()
 
-	e = res.GetError()
+	e := res.GetError()
 
 	if e != nil {
-		return
+		return except.NewHttpRequestError(res)
 	}
 
 	code := res.MustGetResponseCode()
 
 	if !(code >= 200 && code <= 299) {
-		return err.NewHttpRequestError(res)
+		return except.NewHttpRequestError(res)
 	}
 
-	return res.UnmarshalBody(val, unmarshaler)
+	if e = res.UnmarshalBody(val, unmarshaler); e != nil {
+		return except.NewParseError(e, res)
+	}
+
+	return nil
 }
