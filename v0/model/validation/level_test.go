@@ -9,7 +9,7 @@ import (
 func TestLevel_IsValid(t *testing.T) {
 	C.Convey("Level.IsValid", t, func() {
 		C.So(validation.LevelNone.IsValid(), C.ShouldBeTrue)
-		C.So(validation.LevelUnspecified.IsValid(), C.ShouldBeTrue)
+		C.So(validation.LevelDisplayable.IsValid(), C.ShouldBeTrue)
 		C.So(validation.LevelSyntactic.IsValid(), C.ShouldBeTrue)
 		C.So(validation.LevelSemantic.IsValid(), C.ShouldBeTrue)
 		C.So(validation.LevelRunnable.IsValid(), C.ShouldBeTrue)

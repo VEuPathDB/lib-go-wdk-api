@@ -9,19 +9,23 @@ const (
 	errBadLevel = `invalid validation level "%s"`
 )
 
+// Level represents the validation level under which the
+// containing object was validated.
+//
+// See org.gusdb.fgputil.validation.ValidationLevel
 type Level string
 
 const (
 	LevelNone        Level = "NONE"
-	LevelUnspecified Level = "UNSPECIFIED"
 	LevelSyntactic   Level = "SYNTACTIC"
+	LevelDisplayable Level = "DISPLAYABLE"
 	LevelSemantic    Level = "SEMANTIC"
 	LevelRunnable    Level = "RUNNABLE"
 )
 
 var validLevels = []Level{
 	LevelNone,
-	LevelUnspecified,
+	LevelDisplayable,
 	LevelSyntactic,
 	LevelSemantic,
 	LevelRunnable,
