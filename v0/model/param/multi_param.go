@@ -2,35 +2,22 @@ package param
 
 import (
 	"encoding/json"
-	"errors"
-	"regexp"
-)
-
-const (
-	errNoType = "no param type found"
-)
-
-var (
-	typePattern = regexp.MustCompile(`"type": *"([^"])"`)
 )
 
 type MultiParam struct {
-	kind  Kind
+	Base
+
 	value interface{}
 }
 
+type mpAlias MultiParam
+
 func (m *MultiParam) UnmarshalJSON(bytes []byte) error {
-	matches := typePattern.FindSubmatchIndex(bytes)
-	if matches == nil {
-		return errors.New(errNoType)
-	}
 
 	var kind Kind
-	if err := kind.UnmarshalJSON(bytes[matches[2]:matches[3]]); err != nil {
+	if err := json.Unmarshal(bytes, (*mpAlias)(m)); err != nil {
 		return err
 	}
-
-	m.kind = kind
 
 	switch kind {
 	case KindAnswer:
