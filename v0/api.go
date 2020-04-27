@@ -1,13 +1,14 @@
 package wdk
 
 import (
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/recordTypes"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/service"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/path"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/service/strategy-lists/public"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/record"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/strategy"
 )
 
 type apiProps struct {
@@ -22,13 +23,13 @@ type apiProps struct {
 // See `wdk.NewApiUrl` for the possible errors that may be
 // returned
 func New(url string) (Api, error) {
-	if tmp, err := NewApiUrl(url); err != nil {
+	if tmp, err := path.NewApiUrl(url); err != nil {
 		return nil, err
 	} else {
 		return &api{
 			apiProps: apiProps{oneSession: true},
 			url:      tmp,
-			path:     NewPathBuilder(tmp),
+			path:     path.NewBuilder(tmp),
 		}, nil
 	}
 }
@@ -61,27 +62,29 @@ type Api interface {
 
 	// GetUrl returns the resolved URL in use by this API
 	// wrapper.
-	GetUrl() *ApiUrl
+	GetUrl() *path.ApiUrl
 
-	GetServiceDetails() (service.Service, error)
+	GetServiceDetails() (service.Details, error)
 
-	MustGetServiceDetails() service.Service
+	MustGetServiceDetails() service.Details
 
-	GetPublicStrategyList() (public.StrategyList, error)
+	GetPublicStrategyList() (strategy.List, error)
 
-	MustGetPublicStrategyList() public.StrategyList
+	MustGetPublicStrategyList() strategy.List
 
-	GetRecordTypeNames() (res recordTypes.NameList, err error)
+	GetRecordTypeNames() (res record.NameList, err error)
 
-	MustGetRecordTypeNames() recordTypes.NameList
+	MustGetRecordTypeNames() record.NameList
 
-	GetExpandedRecordTypes() (res recordTypes.ExpandedList, err error)
+	GetExpandedRecordTypes() (res record.ExpandedList, err error)
 
-	MustGetExpandedRecordTypes() recordTypes.ExpandedList
+	MustGetExpandedRecordTypes() record.ExpandedList
 
 	UserApiFor(userId uint) UserApi
 
 	CurrentUserApi() UserApi
+
+	RecordApiFor(recordType string) RecordApi
 }
 
 type api struct {
@@ -89,12 +92,21 @@ type api struct {
 
 	gotSessionId bool
 
-	url  *ApiUrl
-	path PathBuilder
+	url  *path.ApiUrl
+	path path.Builder
+}
+
+func (a *api) ctxLog() *logrus.Entry {
+	return logger.WithFields(logrus.Fields{
+		"shareSessions": a.oneSession,
+		"sessionId":     a.sessionId,
+		"authToken":     a.authToken,
+	})
 }
 
 func (a *api) EnableSessionSharing(val bool) Api {
-	logger.WithField("sessionSharing", val).Trace("Api.EnableSessionSharing")
+	a.ctxLog().WithField("newSessionShareVal", val).
+		Trace("Api.EnableSessionSharing")
 
 	a.oneSession = val
 
@@ -107,7 +119,7 @@ func (a *api) EnableSessionSharing(val bool) Api {
 }
 
 func (a *api) UseAuthToken(tkn string) Api {
-	logger.WithField("token", tkn).Trace("Api.UseAuthToken")
+	a.ctxLog().WithField("newTokenVal", tkn).Trace("Api.UseAuthToken")
 
 	a.authToken = tkn
 
@@ -117,34 +129,26 @@ func (a *api) UseAuthToken(tkn string) Api {
 	return a
 }
 
-func (a *api) GetUrl() *ApiUrl {
+func (a *api) GetUrl() *path.ApiUrl {
 	tmp := *a.url
 	return &tmp
 }
 
-func (a *api) GetServiceDetails() (res service.Service, err error) {
-	ctxLog := logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	})
-	ctxLog.Trace("Api.GetServiceDetails")
+func (a *api) GetServiceDetails() (res service.Details, err error) {
+	a.ctxLog().Trace("Api.GetServiceDetails")
 
 	err = subAndParse(prepGet(a.path.Service(), &a.apiProps), &res)
 
 	if err != nil {
-		ctxLog.WithField("error", err).Debug("Api.GetServiceDetails request failed")
+		a.ctxLog().WithField("error", err).
+			Debug("Api.GetServiceDetails request failed")
 	}
 
 	return
 }
 
-func (a *api) MustGetServiceDetails() (res service.Service) {
-	logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	}).Trace("Api.MustGetServiceDetails")
+func (a *api) MustGetServiceDetails() (res service.Details) {
+	a.ctxLog().Trace("Api.MustGetServiceDetails")
 
 	out, err := a.GetServiceDetails()
 	if err != nil {
@@ -154,29 +158,21 @@ func (a *api) MustGetServiceDetails() (res service.Service) {
 	return out
 }
 
-func (a *api) GetPublicStrategyList() (res public.StrategyList, err error) {
-	ctxLog := logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	})
-	ctxLog.Trace("Api.GetPublicStrategyList")
+func (a *api) GetPublicStrategyList() (res strategy.List, err error) {
+	a.ctxLog().Trace("Api.GetPublicStrategyList")
 
 	err = subAndParse(prepGet(a.path.PublicStrategyList(), &a.apiProps), &res)
 
 	if err != nil {
-		ctxLog.WithField("error", err).Debug("Api.GetPublicStrategyList request failed")
+		a.ctxLog().WithField("error", err).
+			Debug("Api.GetPublicStrategyList request failed")
 	}
 
 	return
 }
 
-func (a *api) MustGetPublicStrategyList() public.StrategyList {
-	logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	}).Trace("Api.MustGetPublicStrategyList")
+func (a *api) MustGetPublicStrategyList() strategy.List {
+	a.ctxLog().Trace("Api.MustGetPublicStrategyList")
 
 	out, err := a.GetPublicStrategyList()
 
@@ -187,29 +183,21 @@ func (a *api) MustGetPublicStrategyList() public.StrategyList {
 	return out
 }
 
-func (a *api) GetRecordTypeNames() (res recordTypes.NameList, err error) {
-	ctxLog := logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	})
-	ctxLog.Trace("Api.GetRecordTypeNames")
+func (a *api) GetRecordTypeNames() (res record.NameList, err error) {
+	a.ctxLog().Trace("Api.GetRecordTypeNames")
 
 	err = subAndParse(prepGet(a.path.RecordTypes(), &a.apiProps), &res)
 
 	if err != nil {
-		ctxLog.WithField("error", err).Debug("Api.GetRecordTypeNames request failed")
+		a.ctxLog().WithField("error", err).
+			Debug("Api.GetRecordTypeNames request failed")
 	}
 
 	return
 }
 
-func (a *api) MustGetRecordTypeNames() recordTypes.NameList {
-	logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	}).Trace("Api.MustGetRecordTypeNames")
+func (a *api) MustGetRecordTypeNames() record.NameList {
+	a.ctxLog().Trace("Api.MustGetRecordTypeNames")
 
 	out, err := a.GetRecordTypeNames()
 
@@ -220,29 +208,21 @@ func (a *api) MustGetRecordTypeNames() recordTypes.NameList {
 	return out
 }
 
-func (a *api) GetExpandedRecordTypes() (res recordTypes.ExpandedList, err error) {
-	ctxLog := logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	})
-	ctxLog.Trace("Api.GetExpandedRecordTypes")
+func (a *api) GetExpandedRecordTypes() (res record.ExpandedList, err error) {
+	a.ctxLog().Trace("Api.GetExpandedRecordTypes")
 
 	err = subAndParse(prepGet(a.path.RecordTypesExpanded(), &a.apiProps), &res)
 
 	if err != nil {
-		ctxLog.WithField("error", err).Debug("Api.GetExpandedRecordTypes request failed")
+		a.ctxLog().WithField("error", err).
+			Debug("Api.GetExpandedRecordTypes request failed")
 	}
 
 	return
 }
 
-func (a *api) MustGetExpandedRecordTypes() recordTypes.ExpandedList {
-	logger.WithFields(logrus.Fields{
-		"shareSessions": a.oneSession,
-		"sessionId":     a.sessionId,
-		"authToken":     a.authToken,
-	}).Trace("Api.MustGetExpandedRecordTypes")
+func (a *api) MustGetExpandedRecordTypes() record.ExpandedList {
+	a.ctxLog().Trace("Api.MustGetExpandedRecordTypes")
 
 	out, err := a.GetExpandedRecordTypes()
 
@@ -255,7 +235,7 @@ func (a *api) MustGetExpandedRecordTypes() recordTypes.ExpandedList {
 
 func (a *api) UserApiFor(userId uint) UserApi {
 	return &userApi{
-		builder: NewUserPathBuilder(a.url, userId),
+		builder: path.NewUserBuilder(a.url, userId),
 		userId:  strconv.FormatUint(uint64(userId), 10),
 		props:   &a.apiProps,
 	}
@@ -263,8 +243,16 @@ func (a *api) UserApiFor(userId uint) UserApi {
 
 func (a *api) CurrentUserApi() UserApi {
 	return &userApi{
-		builder: CurrentUserPathBuilder(a.url),
+		builder: path.CurrentPathBuilder(a.url),
 		userId:  userCurrent,
 		props:   &a.apiProps,
+	}
+}
+
+func (a *api) RecordApiFor(recordType string) RecordApi {
+	return &recordApi{
+		recordType: recordType,
+		url:        path.NewRecordBuilder(recordType, a.url),
+		props:      &a.apiProps,
 	}
 }
