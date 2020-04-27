@@ -16,11 +16,23 @@ const (
 )
 
 type RecordApi interface {
+	// GetSearches returns the list of available searches for
+	// the current record type, or an error if the request
+	// failed or response could not be parsed.
 	GetSearches() (search.List, error)
+
+	// MustGetSearches does the same as GetSearches except
+	// it will panic on error.
 	MustGetSearches() search.List
 
-	GetSearch(urlSegment string) (search.FullSearch, error)
-	MustGetSearch(urlSegment string) search.FullSearch
+	// GetSearch details about the given search from the
+	// current record type, or an error if the request failed
+	// or the response could not be parsed.
+	GetSearch(urlSegment string) (search.ValidatedSearch, error)
+
+	// MustGetSearch does the same as GetSearch except it will
+	// panic on error.
+	MustGetSearch(urlSegment string) search.ValidatedSearch
 }
 
 type recordApi struct {
@@ -62,7 +74,7 @@ func (r *recordApi) MustGetSearches() search.List {
 	return out
 }
 
-func (r *recordApi) GetSearch(seg string) (res search.FullSearch, err error) {
+func (r *recordApi) GetSearch(seg string) (res search.ValidatedSearch, err error) {
 	r.ctxLog().Trace(mnGetSearch)
 
 	err = subAndParse(prepGet(r.url.Search(seg), r.props), &res)
@@ -75,7 +87,7 @@ func (r *recordApi) GetSearch(seg string) (res search.FullSearch, err error) {
 	return
 }
 
-func (r *recordApi) MustGetSearch(seg string) search.FullSearch {
+func (r *recordApi) MustGetSearch(seg string) search.ValidatedSearch {
 	r.ctxLog().Trace(mnMustGetSearch)
 
 	out, err := r.GetSearch(seg)
