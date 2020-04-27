@@ -3,7 +3,7 @@ package path
 import "fmt"
 
 const (
-	queryExpanded = "expanded"
+	queryExpanded = "format=expanded"
 
 	urlService      = "service"
 	urlUsers        = urlService + "/users"

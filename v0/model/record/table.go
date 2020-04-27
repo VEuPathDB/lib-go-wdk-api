@@ -7,7 +7,7 @@ import (
 )
 
 type Table struct {
-	Attributes     attribute.Field   `json:"attributes"`
+	Attributes     []attribute.Field `json:"attributes"`
 	ClientSortSpec []attribute.Sort  `json:"clientSortSpec"`
 	Description    optional.String   `json:"description"`
 	DisplayName    optional.String   `json:"displayName"`

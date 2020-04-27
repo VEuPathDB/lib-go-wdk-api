@@ -21,7 +21,7 @@ type Base struct {
 	NewBuild                              optional.String   `json:"newBuild"`
 	ReviseBuild                           optional.String   `json:"reviseBuild"`
 	OutputRecordClassName                 string            `json:"outputRecordClassName"`
-	Filters                               []string          `json:"filters"`
+	Filters                               []Filter          `json:"filters"`
 	DefaultAttributes                     []string          `json:"defaultAttributes"`
 	DefaultSorting                        []attribute.Sort  `json:"defaultSorting"`
 	DynamicAttributes                     []attribute.Field `json:"dynamicAttributes"`

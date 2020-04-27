@@ -12,10 +12,10 @@ const (
 type FieldDataType string
 
 const (
-	FieldDataTypeString FieldDataType = "string"
-	FieldDataTypeNumber FieldDataType = "number"
-	FieldDataTypeDate   FieldDataType = "date"
-	FieldDataTypeOther  FieldDataType = "other"
+	FieldDataTypeString FieldDataType = "STRING"
+	FieldDataTypeNumber FieldDataType = "NUMBER"
+	FieldDataTypeDate   FieldDataType = "DATE"
+	FieldDataTypeOther  FieldDataType = "OTHER"
 )
 
 var validFieldDataTypes = []FieldDataType{
