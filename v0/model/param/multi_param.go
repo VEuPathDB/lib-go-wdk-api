@@ -4,13 +4,29 @@ import (
 	"encoding/json"
 )
 
+type mpAlias MultiParam
+
 type MultiParam struct {
 	Base
 
 	value interface{}
 }
 
-type mpAlias MultiParam
+func (m *MultiParam) RawParam() interface{} {
+	return m.value
+}
+
+func (m *MultiParam) AsAnswerParam() Answer          { return m.value.(Answer) }
+func (m *MultiParam) AsKindFilter() Filter           { return m.value.(Filter) }
+func (m *MultiParam) AsKindDataset() Dataset         { return m.value.(Dataset) }
+func (m *MultiParam) AsKindDate() Date               { return m.value.(Date) }
+func (m *MultiParam) AsKindDateRange() DateRange     { return m.value.(DateRange) }
+func (m *MultiParam) AsKindMultiVocab() Enum         { return m.value.(Enum) }
+func (m *MultiParam) AsKindSingleVocab() Enum        { return m.value.(Enum) }
+func (m *MultiParam) AsKindEnum() Enum               { return m.value.(Enum) }
+func (m *MultiParam) AsKindNumber() Number           { return m.value.(Number) }
+func (m *MultiParam) AsKindNumberRange() NumberRange { return m.value.(NumberRange) }
+func (m *MultiParam) AsKindTimestamp() Timestamp     { return m.value.(Timestamp) }
 
 func (m *MultiParam) UnmarshalJSON(bytes []byte) error {
 
