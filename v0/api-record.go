@@ -1,9 +1,10 @@
 package wdk
 
 import (
+	"github.com/sirupsen/logrus"
+
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/search"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/path"
-	"github.com/sirupsen/logrus"
 )
 
 const (
