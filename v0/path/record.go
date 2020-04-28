@@ -25,7 +25,7 @@ type RecordPathBuilder interface {
 func NewRecordBuilder(base ApiUrl, recordType string) RecordPathBuilder {
 	return &recordBuilder{
 		recordType: recordType,
-		url:        newApiUrl(base.BaseUrl() + fmt.Sprintf(urlRecordType, recordType)),
+		url:        newApiUrl(base.BaseUrl()+fmt.Sprintf(urlRecordType, recordType), base.Query()),
 	}
 }
 
