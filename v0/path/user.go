@@ -19,14 +19,14 @@ type UserPathBuilder interface {
 
 func NewUserBuilder(url ApiUrl, userId uint) UserPathBuilder {
 	return &userPathBuilder{
-		url: newApiUrl(url.BaseUrl() +
-			fmt.Sprintf(urlUser, strconv.FormatUint(uint64(userId), 10))),
+		url: newApiUrl(url.BaseUrl()+
+			fmt.Sprintf(urlUser, strconv.FormatUint(uint64(userId), 10)), url.Query()),
 	}
 }
 
 func CurrentPathBuilder(url ApiUrl) UserPathBuilder {
 	return &userPathBuilder{
-		url: newApiUrl(url.BaseUrl() + fmt.Sprintf(urlUser, userCurrent)),
+		url: newApiUrl(url.BaseUrl()+fmt.Sprintf(urlUser, userCurrent), url.Query()),
 	}
 }
 
