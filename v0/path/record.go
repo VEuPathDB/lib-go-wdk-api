@@ -3,7 +3,7 @@ package path
 import "fmt"
 
 const (
-	urlSearches = urlRecordTypes + "/%s/searches"
+	urlSearches = "/searches"
 	urlSearch   = urlSearches + "/%s"
 )
 
@@ -35,9 +35,9 @@ type recordBuilder struct {
 }
 
 func (r *recordBuilder) Searches() string {
-	return r.url.wrap(fmt.Sprintf(urlSearches, r.recordType))
+	return r.url.wrap(urlSearches)
 }
 
 func (r *recordBuilder) Search(search string) string {
-	return r.url.wrap(fmt.Sprintf(urlSearch, r.recordType, search))
+	return r.url.wrap(fmt.Sprintf(urlSearch, search))
 }
