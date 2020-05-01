@@ -14,6 +14,10 @@ const (
 	AlignRight  Align = "right"
 )
 
+func (a Align) Ptr() *Align {
+	return &a
+}
+
 func (a Align) IsValid() bool {
 	return a == AlignCenter || a == AlignLeft || a == AlignRight
 }
@@ -33,28 +37,4 @@ func (a *Align) UnmarshalJSON(bytes []byte) error {
 
 	*a = align
 	return nil
-}
-
-type OptionalAlign struct {
-	value *Align
-}
-
-func (o *OptionalAlign) Exists() bool {
-	return o.value != nil
-}
-
-func (o *OptionalAlign) Get() Align {
-	return *o.value
-}
-
-func (o *OptionalAlign) Set(val Align) {
-	o.value = &val
-}
-
-func (o *OptionalAlign) Clear() {
-	o.value = nil
-}
-
-func (o *OptionalAlign) UnmarshalJSON(bytes []byte) error {
-	return json.Unmarshal(bytes, &o.value)
 }

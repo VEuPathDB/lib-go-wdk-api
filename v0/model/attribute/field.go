@@ -3,17 +3,16 @@ package attribute
 import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/answer"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/common"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
 )
 
 // Field
 //
 // See org.gusdb.wdk.service.formatter.AttributeFieldFormatter
 type Field struct {
-	Align         common.Align      `json:"align"`
+	Align         *common.Align     `json:"align"`
 	DisplayName   string            `json:"displayName"`
 	Formats       []answer.Format   `json:"formats"`
-	Help          optional.String   `json:"help"`
+	Help          *string           `json:"help"`
 	IsDisplayable bool              `json:"isDisplayable"`
 	IsInReport    bool              `json:"isInReport"`
 	IsRemovable   bool              `json:"isRemovable"`

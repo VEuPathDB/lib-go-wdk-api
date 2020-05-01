@@ -2,26 +2,26 @@ package step
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/answer"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/validation"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
-	"time"
 )
 
 type ShortStep struct {
 	Id                      uint64            `json:"id"`
 	DisplayName             string            `json:"displayName"`
 	ShortDisplayName        string            `json:"shortDisplayName"`
-	CustomName              optional.String   `json:"customName"`
-	BaseCustomName          optional.String   `json:"baseCustomName"`
+	CustomName              *string           `json:"customName"`
+	BaseCustomName          *string           `json:"baseCustomName"`
 	IsExpanded              bool              `json:"isExpanded"`
-	ExpandedName            optional.String   `json:"expandedName"`
+	ExpandedName            *string           `json:"expandedName"`
 	IsFiltered              bool              `json:"isFiltered"`
-	Description             optional.String   `json:"description"`
+	Description             *string           `json:"description"`
 	OwnerId                 uint64            `json:"ownerId"`
-	StrategyId              optional.Uint64   `json:"strategyId"`
+	StrategyId              *uint64           `json:"strategyId"`
 	HasCompleteStepAnalyses bool              `json:"hasCompleteStepAnalyses"`
-	RecordClassName         optional.String   `json:"recordClassName"`
+	RecordClassName         *string           `json:"recordClassName"`
 	SearchName              string            `json:"searchName"`
 	SearchConfig            answer.Spec       `json:"searchConfig"`
 	ValidationBundle        validation.Bundle `json:"validationBundle"`

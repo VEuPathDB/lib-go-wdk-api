@@ -1,4 +1,4 @@
-package common
+package attribute
 
 import (
 	"encoding/json"
@@ -6,14 +6,14 @@ import (
 	"strings"
 )
 
-type AllOrList struct {
+type PresetOrList struct {
 	isAll bool
-	mark  AllMarker
+	mark  Preset
 	attrs []string
 }
 
-func (a *AllOrList) UnmarshalJSON(bytes []byte) error {
-	var all AllMarker
+func (a *PresetOrList) UnmarshalJSON(bytes []byte) error {
+	var all Preset
 	if err := all.UnmarshalJSON(bytes); err != nil {
 		if strings.HasPrefix(err.Error(), "unrecognized 'all'") {
 			return err
@@ -33,30 +33,37 @@ func (a *AllOrList) UnmarshalJSON(bytes []byte) error {
 	return errors.New("unrecognized json, should be string or string[]")
 }
 
-func (a *AllOrList) SetAll(mark AllMarker) {
+func (a *PresetOrList) MarshalJSON() ([]byte, error) {
+	if a.isAll {
+		return json.Marshal(a.mark)
+	}
+	return json.Marshal(a.attrs)
+}
+
+func (a *PresetOrList) SetAll(mark Preset) {
 	a.isAll = true
 	a.mark = mark
 	a.attrs = nil
 }
 
-func (a *AllOrList) SetList(list []string) {
+func (a *PresetOrList) SetList(list []string) {
 	a.isAll = false
 	a.mark = ""
 	a.attrs = list
 }
 
-func (a *AllOrList) IsAll() bool {
+func (a *PresetOrList) IsAll() bool {
 	return a.isAll
 }
 
-func (a *AllOrList) IsList() bool {
+func (a *PresetOrList) IsList() bool {
 	return !a.isAll
 }
 
-func (a *AllOrList) AllMarker() AllMarker {
+func (a *PresetOrList) AllMarker() Preset {
 	return a.mark
 }
 
-func (a *AllOrList) List() []string {
+func (a *PresetOrList) List() []string {
 	return a.attrs
 }

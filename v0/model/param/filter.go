@@ -2,7 +2,6 @@ package param
 
 import (
 	. "github.com/VEuPathDB/lib-go-wdk-api/v0/model/common"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
 )
 
 // Filter Param
@@ -22,12 +21,12 @@ type Filter struct {
 }
 
 type Ontology struct {
-	Term        optional.String `json:"term"`
-	Parent      optional.String `json:"parent"`
-	Display     optional.String `json:"display"`
-	Description optional.String `json:"description"`
-	Type        optional.String `json:"type"`
-	Units       optional.String `json:"units"`
-	Precision   optional.Uint   `json:"precision"`
-	IsRange     optional.Bool   `json:"isRange"`
+	Term        *string `json:"term"`
+	Parent      *string `json:"parent"`
+	Display     *string `json:"display"`
+	Description *string `json:"description"`
+	Type        *string `json:"type"`
+	Units       *string `json:"units"`
+	Precision   *uint   `json:"precision"`
+	IsRange     *bool   `json:"isRange"`
 }

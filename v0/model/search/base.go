@@ -4,7 +4,6 @@ import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/attribute"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/common"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/summary"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
 )
 
 // Base contains fields common to the different search
@@ -14,12 +13,12 @@ type Base struct {
 	FullName                              string            `json:"fullName"`
 	DisplayName                           string            `json:"displayName"`
 	ShortDisplayName                      string            `json:"shortDisplayName"`
-	Description                           optional.String   `json:"description"`
-	IconName                              optional.String   `json:"iconName"`
-	Summary                               optional.String   `json:"summary"`
-	Help                                  optional.String   `json:"help"`
-	NewBuild                              optional.String   `json:"newBuild"`
-	ReviseBuild                           optional.String   `json:"reviseBuild"`
+	Description                           *string           `json:"description"`
+	IconName                              *string           `json:"iconName"`
+	Summary                               *string           `json:"summary"`
+	Help                                  *string           `json:"help"`
+	NewBuild                              *string           `json:"newBuild"`
+	ReviseBuild                           *string           `json:"reviseBuild"`
 	OutputRecordClassName                 string            `json:"outputRecordClassName"`
 	Filters                               []Filter          `json:"filters"`
 	DefaultAttributes                     []string          `json:"defaultAttributes"`
@@ -30,7 +29,7 @@ type Base struct {
 	IsAnalyzable                          bool              `json:"isAnalyzable"`
 	AllowedPrimaryInputRecordClassNames   []string          `json:"allowedPrimaryInputRecordClassNames"`
 	AllowedSecondaryInputRecordClassNames []string          `json:"allowedSecondaryInputRecordClassNames"`
-	QueryName                             optional.String   `json:"queryName"`
+	QueryName                             *string           `json:"queryName"`
 	NoSummaryOnSingleRecord               bool              `json:"noSummaryOnSingleRecord"`
 	Properties                            common.Properties `json:"properties"`
 }

@@ -94,3 +94,9 @@ func subAndParse(req creq.Request, val interface{}) error {
 
 	return nil
 }
+
+func logFail(err error, l *log.Entry, meth string) {
+	if err != nil {
+		l.WithField("error", err).Debug(meth + apiReqFailed)
+	}
+}

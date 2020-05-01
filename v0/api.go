@@ -2,6 +2,7 @@ package wdk
 
 import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/service"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/user"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/path"
 	"strconv"
 
@@ -44,6 +45,8 @@ func ForceNew(url string) Api {
 	}
 }
 
+const apiClassName = "Api"
+
 type Api interface {
 	// EnableSessionSharing sets whether or not individual
 	// requests should use the same session.
@@ -79,19 +82,22 @@ type Api interface {
 	MustGetServiceDetails() service.Details
 
 	GetPublicStrategyList() (strategy.List, error)
-
 	MustGetPublicStrategyList() strategy.List
 
-	GetRecordTypeNames() (res record.NameList, err error)
+	GetRecordTypeNames() ([]string, error)
+	MustGetRecordTypeNames() []string
 
-	MustGetRecordTypeNames() record.NameList
+	GetRecordTypes() ([]record.Type, error)
+	MustGetRecordTypes() []record.Type
 
-	GetExpandedRecordTypes() (res record.ExpandedList, err error)
+	GetUser(userId uint) (user.Profile, error)
+	MustGetUser(userId uint) user.Profile
+	GetCurrentUser() (user.Profile, error)
+	MustGetCurrentUser() user.Profile
 
-	MustGetExpandedRecordTypes() record.ExpandedList
-
+	// UserApiFor returns an API access type for dealing with
+	// API endpoints dependent on a specific user.
 	UserApiFor(userId uint) UserApi
-
 	CurrentUserApi() UserApi
 
 	RecordApiFor(recordType string) RecordApi
@@ -105,6 +111,8 @@ type api struct {
 	url  path.ApiUrl
 	path path.Builder
 }
+
+const apiReqFailed = " request failed"
 
 func (a *api) ctxLog() *logrus.Entry {
 	return logger.WithFields(logrus.Fields{
@@ -196,10 +204,10 @@ func (a *api) MustGetPublicStrategyList() strategy.List {
 	return out
 }
 
-func (a *api) GetRecordTypeNames() (res record.NameList, err error) {
+func (a *api) GetRecordTypeNames() (res []string, err error) {
 	a.ctxLog().Trace("Api.GetRecordTypeNames")
 
-	err = subAndParse(prepGet(a.path.RecordTypes(), &a.apiProps), &res)
+	err = subAndParse(prepGet(a.path.RecordTypeNames(), &a.apiProps), &res)
 
 	if err != nil {
 		a.ctxLog().WithField("error", err).
@@ -209,7 +217,7 @@ func (a *api) GetRecordTypeNames() (res record.NameList, err error) {
 	return
 }
 
-func (a *api) MustGetRecordTypeNames() record.NameList {
+func (a *api) MustGetRecordTypeNames() []string {
 	a.ctxLog().Trace("Api.MustGetRecordTypeNames")
 
 	out, err := a.GetRecordTypeNames()
@@ -221,26 +229,87 @@ func (a *api) MustGetRecordTypeNames() record.NameList {
 	return out
 }
 
-func (a *api) GetExpandedRecordTypes() (res record.ExpandedList, err error) {
-	a.ctxLog().Trace("Api.GetExpandedRecordTypes")
+const apiMethGetRecTypes = apiClassName + ".GetRecordTypes"
 
-	err = subAndParse(prepGet(a.path.RecordTypesExpanded(), &a.apiProps), &res)
+func (a *api) GetRecordTypes() (res []record.Type, err error) {
+	a.ctxLog().Trace(apiMethGetRecTypes)
+
+	err = subAndParse(prepGet(a.path.RecordTypes(), &a.apiProps), &res)
 
 	if err != nil {
-		a.ctxLog().WithField("error", err).
-			Debug("Api.GetExpandedRecordTypes request failed")
+		a.ctxLog().
+			WithField("error", err).
+			Debug(apiMethGetRecTypes + apiReqFailed)
 	}
 
 	return
 }
 
-func (a *api) MustGetExpandedRecordTypes() record.ExpandedList {
-	a.ctxLog().Trace("Api.MustGetExpandedRecordTypes")
+const apiMethMustGetRecTypes = apiClassName + ".MustGetRecordTypes"
 
-	out, err := a.GetExpandedRecordTypes()
+func (a *api) MustGetRecordTypes() []record.Type {
+	a.ctxLog().Trace(apiMethMustGetRecTypes)
+
+	out, err := a.GetRecordTypes()
 
 	if err != nil {
-		logger.Panic(err)
+		a.ctxLog().Panic(err)
+	}
+
+	return out
+}
+
+const apiMethGetUser = apiClassName + ".GetUser"
+
+func (a *api) GetUser(userId uint) (res user.Profile, err error) {
+	a.ctxLog().Trace(apiMethGetUser)
+
+	err = subAndParse(prepGet(a.path.User(userId), &a.apiProps), &res)
+
+	if err != nil {
+		a.ctxLog().WithField("error", err).Debug(apiMethGetUser + apiReqFailed)
+	}
+
+	return
+}
+
+const apiMethMustGetUser = apiClassName + ".MustGetUser"
+
+func (a *api) MustGetUser(userId uint) user.Profile {
+	a.ctxLog().Trace(apiMethMustGetUser)
+
+	out, err := a.GetUser(userId)
+
+	if err != nil {
+		a.ctxLog().Panic(err)
+	}
+
+	return out
+}
+
+const apiMethGetCurUser = apiClassName + ".GetCurrentUser"
+
+func (a *api) GetCurrentUser() (res user.Profile, err error) {
+	a.ctxLog().Trace(apiMethGetCurUser)
+
+	err = subAndParse(prepGet(a.path.CurrentUser(), &a.apiProps), &res)
+
+	if err != nil {
+		a.ctxLog().WithField("error", err).Debug(apiMethGetUser + apiReqFailed)
+	}
+
+	return
+}
+
+const apiMethMustGetCurUser = apiClassName + ".MustGetCurrentUser"
+
+func (a *api) MustGetCurrentUser() user.Profile {
+	a.ctxLog().Trace(apiMethMustGetCurUser)
+
+	out, err := a.GetCurrentUser()
+
+	if err != nil {
+		a.ctxLog().Panic(err)
 	}
 
 	return out
@@ -265,7 +334,7 @@ func (a *api) CurrentUserApi() UserApi {
 func (a *api) RecordApiFor(recordType string) RecordApi {
 	return &recordApi{
 		rType: recordType,
-		url:   path.NewRecordBuilder(a.url, recordType),
+		path:  path.NewRecordBuilder(a.url, recordType),
 		props: &a.apiProps,
 	}
 }

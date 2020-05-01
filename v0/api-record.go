@@ -7,6 +7,7 @@ import (
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/path"
 )
 
+// type/method names for logging
 const (
 	mnRecordPrefix    = "RecordApi"
 	mnGetSearches     = mnRecordPrefix + ".GetSearches"
@@ -25,11 +26,11 @@ type RecordApi interface {
 	// GetSearches returns the list of available searches for
 	// the current record type, or an error if the request
 	// failed or response could not be parsed.
-	GetSearches() (search.List, error)
+	GetSearches() ([]search.ShortSearch, error)
 
 	// MustGetSearches does the same as GetSearches except
 	// it will panic on error.
-	MustGetSearches() search.List
+	MustGetSearches() []search.ShortSearch
 
 	// GetSearch details about the given search from the
 	// current record type, or an error if the request failed
@@ -39,11 +40,19 @@ type RecordApi interface {
 	// MustGetSearch does the same as GetSearch except it will
 	// panic on error.
 	MustGetSearch(urlSegment string) search.ValidatedSearch
+
+	// PostRecords() (record._____, error)
+	// MustPostRecords() record._____
+
+	// SearchApiFor takes the UrlSegment for a search and
+	// constructs an API wrapper for the searches API
+	// sub-endpoints.
+	SearchApiFor(searchName string) SearchApi
 }
 
 type recordApi struct {
 	rType string
-	url   path.RecordPathBuilder
+	path  path.RecordPathBuilder
 	props *apiProps
 }
 
@@ -57,13 +66,13 @@ func (r *recordApi) ctxLog() *logrus.Entry {
 }
 
 func (r *recordApi) UrlBuilder() path.RecordPathBuilder {
-	return r.url
+	return r.path
 }
 
-func (r *recordApi) GetSearches() (res search.List, err error) {
+func (r *recordApi) GetSearches() (res []search.ShortSearch, err error) {
 	r.ctxLog().Trace(mnGetSearches)
 
-	err = subAndParse(prepGet(r.url.Searches(), r.props), &res)
+	err = subAndParse(prepGet(r.path.Searches(), r.props), &res)
 
 	if err != nil {
 		r.ctxLog().WithField("error", err).
@@ -73,7 +82,7 @@ func (r *recordApi) GetSearches() (res search.List, err error) {
 	return
 }
 
-func (r *recordApi) MustGetSearches() search.List {
+func (r *recordApi) MustGetSearches() []search.ShortSearch {
 	r.ctxLog().Trace(mnMustGetSearches)
 
 	out, err := r.GetSearches()
@@ -87,7 +96,7 @@ func (r *recordApi) MustGetSearches() search.List {
 func (r *recordApi) GetSearch(seg string) (res search.ValidatedSearch, err error) {
 	r.ctxLog().Trace(mnGetSearch)
 
-	err = subAndParse(prepGet(r.url.Search(seg), r.props), &res)
+	err = subAndParse(prepGet(r.path.Search(seg), r.props), &res)
 
 	if err != nil {
 		r.ctxLog().WithField("error", err).
@@ -106,4 +115,13 @@ func (r *recordApi) MustGetSearch(seg string) search.ValidatedSearch {
 	}
 
 	return out
+}
+
+func (r *recordApi) SearchApiFor(name string) SearchApi {
+	return &searchApi{
+		record: r.rType,
+		search: name,
+		path:   path.NewSearchPathBuilder(r.path.Url(), name),
+		props:  nil,
+	}
 }

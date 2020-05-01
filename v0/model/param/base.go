@@ -1,9 +1,5 @@
 package param
 
-import (
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
-)
-
 // Base
 //
 // See org.gusdb.wdk.service.formatter.param.ParamFormatter
@@ -22,5 +18,5 @@ type Base struct {
 
 	/* WDK Optional Fields */
 
-	InitialDisplayValue optional.String `json:"initialDisplayValue"`
+	InitialDisplayValue *string `json:"initialDisplayValue"`
 }

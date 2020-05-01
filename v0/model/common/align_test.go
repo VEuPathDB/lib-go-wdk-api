@@ -46,21 +46,10 @@ func TestAlign_UnmarshalJSON(t *testing.T) {
 }
 
 func TestOptionalAlign(t *testing.T) {
-	C.Convey("OptionalAlign", t, func() {
-		var oa common.OptionalAlign
-		C.So(oa.Exists(), C.ShouldBeFalse)
-		C.So(func() { oa.Get() }, C.ShouldPanic)
-
-		oa.Set(common.AlignLeft)
-		C.So(oa.Exists(), C.ShouldBeTrue)
-		C.So(oa.Get(), C.ShouldResemble, common.AlignLeft)
-
-		oa.Clear()
-		C.So(oa.Exists(), C.ShouldBeFalse)
-		C.So(func() { oa.Get() }, C.ShouldPanic)
+	C.Convey("OptAlign", t, func() {
+		var oa common.OptAlign
 
 		C.So(oa.UnmarshalJSON([]byte(`"right"`)), C.ShouldBeNil)
-		C.So(oa.Exists(), C.ShouldBeTrue)
-		C.So(oa.Get(), C.ShouldResemble, common.AlignRight)
+		C.So(oa.Value, C.ShouldResemble, common.AlignRight)
 	})
 }

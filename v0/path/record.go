@@ -18,6 +18,8 @@ type RecordPathBuilder interface {
 	// Search constructs a URL to reach the search lookup by
 	// name REST endpoint using the given search name.
 	Search(search string) string
+
+	Url() ApiUrl
 }
 
 // NewRecordBuilder constructs a new path builder
@@ -32,6 +34,10 @@ func NewRecordBuilder(base ApiUrl, recordType string) RecordPathBuilder {
 type recordBuilder struct {
 	recordType string
 	url        ApiUrl
+}
+
+func (r *recordBuilder) Url() ApiUrl {
+	return r.url
 }
 
 func (r *recordBuilder) Searches() string {

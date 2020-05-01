@@ -1,9 +1,5 @@
 package param
 
-import (
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/optional"
-)
-
 type Enum struct {
 	Base
 
@@ -13,6 +9,6 @@ type Enum struct {
 	Vocabulary       Vocabulary  `json:"vocabulary"`
 
 	/* Tree Box Param Fields */
-	CountOnlyLeaves optional.Bool `json:"countOnlyLeaves"`
-	DepthExpanded   optional.Uint `json:"depthExpanded"`
+	CountOnlyLeaves *bool `json:"countOnlyLeaves"`
+	DepthExpanded   *uint `json:"depthExpanded"`
 }
