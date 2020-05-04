@@ -146,7 +146,7 @@ func (a *api) UseAuthToken(tkn string) Api {
 	a.authToken = tkn
 
 	// Update to a session that's authenticated
-	a.sessionId = getSessionId(a.url.String(), a.apiProps)
+	a.sessionId = getSessionId(a.path.Service(), a.apiProps)
 
 	return a
 }

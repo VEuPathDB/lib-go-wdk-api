@@ -2,7 +2,6 @@ package wdk
 
 import (
 	"encoding/json"
-	"github.com/VEuPathDB/lib-go-wdk-api/v0/except"
 	"net/http"
 	"strings"
 
@@ -11,6 +10,8 @@ import (
 	"github.com/Foxcapades/Go-ChainRequest"
 	"github.com/Foxcapades/Go-ChainRequest/request/header"
 	"github.com/Foxcapades/Go-ChainRequest/simple"
+
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/except"
 )
 
 var (
