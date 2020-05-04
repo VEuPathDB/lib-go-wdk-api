@@ -135,7 +135,7 @@ func (a *api) EnableSessionSharing(val bool) Api {
 	if !a.gotSessionId && val {
 		props := a.apiProps
 		props.oneSession = false
-		a.sessionId = getSessionId(a.url.String(), a.apiProps)
+		a.sessionId = getSessionId(a.path.Service(), a.apiProps)
 	}
 	return a
 }
