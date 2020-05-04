@@ -21,7 +21,7 @@ func (a Preset) Ptr() *Preset {
 }
 
 func (a Preset) IsValid() bool {
-	return a == PresetAllAttributes || a == PresetAllTables
+	return a == PresetAllAttributes || a == PresetDefaultAttributes
 }
 
 func (a *Preset) UnmarshalJSON(bytes []byte) error {

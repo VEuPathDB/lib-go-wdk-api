@@ -9,7 +9,7 @@ import (
 type HttpRequestError interface {
 	error
 
-	ResponseCode() opt.Int
+	ResponseCode() *int
 	ResponseBody() []byte
 }
 
@@ -20,7 +20,7 @@ func NewHttpRequestError(res creq.Response) HttpRequestError {
 		code := int(res.MustGetResponseCode())
 		return &httpReqErr{
 			message: fmt.Sprintf("server responded with error code %d", code),
-			code:    opt.NewInt(code),
+			code:    opt.IntPtr(code),
 			body:    res.MustGetBody(),
 		}
 	}
@@ -28,7 +28,7 @@ func NewHttpRequestError(res creq.Response) HttpRequestError {
 
 type httpReqErr struct {
 	message string
-	code    opt.Int
+	code    *int
 	body    []byte
 }
 
@@ -36,7 +36,7 @@ func (h *httpReqErr) Error() string {
 	return h.message
 }
 
-func (h *httpReqErr) ResponseCode() opt.Int {
+func (h *httpReqErr) ResponseCode() *int {
 	return h.code
 }
 
