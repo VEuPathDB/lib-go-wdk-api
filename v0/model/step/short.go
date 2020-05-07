@@ -2,10 +2,9 @@ package step
 
 import (
 	"encoding/json"
-	"time"
-
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/answer"
 	"github.com/VEuPathDB/lib-go-wdk-api/v0/model/validation"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/x/xtime"
 )
 
 type ShortStep struct {
@@ -25,7 +24,7 @@ type ShortStep struct {
 	SearchName              string            `json:"searchName"`
 	SearchConfig            answer.Spec       `json:"searchConfig"`
 	ValidationBundle        validation.Bundle `json:"validationBundle"`
-	CreatedTime             time.Time         `json:"createdTime"`
-	LastRunTime             time.Time         `json:"lastRunTime"`
+	CreatedTime             xtime.Time         `json:"createdTime"`
+	LastRunTime             xtime.Time         `json:"lastRunTime"`
 	DisplayPrefs            json.RawMessage   `json:"displayPreferences"`
 }

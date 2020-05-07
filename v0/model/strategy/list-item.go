@@ -1,7 +1,7 @@
 package strategy
 
 import (
-	"time"
+	"github.com/VEuPathDB/lib-go-wdk-api/v0/x/xtime"
 )
 
 type List []ShortStrategy
@@ -14,9 +14,9 @@ type ShortStrategy struct {
 	RootStepId                uint      `json:"rootStepId"`
 	RecordClassName           *string   `json:"recordClassName"`
 	Signature                 string    `json:"signature"`
-	CreatedTime               time.Time `json:"createdTime"`
-	LastViewed                time.Time `json:"lastViewed"`
-	LastModified              time.Time `json:"lastModified"`
+	CreatedTime               xtime.Time `json:"createdTime"`
+	LastViewed                xtime.Time `json:"lastViewed"`
+	LastModified              xtime.Time `json:"lastModified"`
 	IsPublic                  bool      `json:"isPublic"`
 	IsSaved                   bool      `json:"isSaved"`
 	IsDeleted                 bool      `json:"isDeleted"`

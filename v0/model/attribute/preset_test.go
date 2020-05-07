@@ -9,7 +9,7 @@ import (
 func TestAllMarker_IsValid(t *testing.T) {
 	C.Convey("Preset.IsValid", t, func() {
 		C.So(attribute.PresetAllAttributes.IsValid(), C.ShouldBeTrue)
-		C.So(attribute.PresetAllTables.IsValid(), C.ShouldBeTrue)
+		C.So(attribute.PresetDefaultAttributes.IsValid(), C.ShouldBeTrue)
 		C.So(attribute.Preset("saturate").IsValid(), C.ShouldBeFalse)
 	})
 }
@@ -28,8 +28,8 @@ func TestAllMarker_UnmarshalJSON(t *testing.T) {
 
 		C.Convey("Valid Value", func() {
 			var test attribute.Preset
-			C.So(test.UnmarshalJSON([]byte(`"`+attribute.PresetAllTables+`"`)), C.ShouldBeNil)
-			C.So(test, C.ShouldEqual, attribute.PresetAllTables)
+			C.So(test.UnmarshalJSON([]byte(`"`+attribute.PresetDefaultAttributes+`"`)), C.ShouldBeNil)
+			C.So(test, C.ShouldEqual, attribute.PresetDefaultAttributes)
 		})
 	})
 }

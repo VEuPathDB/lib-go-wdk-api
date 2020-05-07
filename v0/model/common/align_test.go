@@ -44,12 +44,3 @@ func TestAlign_UnmarshalJSON(t *testing.T) {
 		})
 	})
 }
-
-func TestOptionalAlign(t *testing.T) {
-	C.Convey("OptAlign", t, func() {
-		var oa common.OptAlign
-
-		C.So(oa.UnmarshalJSON([]byte(`"right"`)), C.ShouldBeNil)
-		C.So(oa.Value, C.ShouldResemble, common.AlignRight)
-	})
-}
