@@ -163,6 +163,7 @@ func (a *api) GetServiceDetails() (res service.Details, err error) {
 	if err != nil {
 		a.ctxLog().WithField("error", err).
 			Debug("Api.GetServiceDetails request failed")
+		a.ctxLog().Trace(res)
 	}
 
 	return
